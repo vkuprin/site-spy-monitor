@@ -32,7 +32,10 @@ module.exports = {
     '@typescript-eslint/prefer-nullish-coalescing': 0,
     '@typescript-eslint/strict-boolean-expressions': 0,
     'consistent-type-imports': 0,
-    '@typescript-eslint/consistent-type-imports': 0
+    '@typescript-eslint/consistent-type-imports': 0,
+    '@typescript-eslint/explicit-function-return-type': 0,
+    '@typescript-eslint/no-base-to-string': 0,
+    '@typescript-eslint/restrict-template-expressions': 0
   },
   settings: {
     node: {

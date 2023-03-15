@@ -35,19 +35,19 @@ body {
     ul {
       display: flex;
       margin-top: 1em;
-      justify-content: space-around;
+      justify-content: space-between;
 
-      li {
-        button {
-          border-radius: 25px;
-          font-size: 20px;
-          font-weight: 600;
-          padding: 10px 17px;
-          background-color: rgba(0, 0, 255, 0.7);
-          color: white;
-          cursor: pointer;
-        }
-      }
+      //li {
+      //  button {
+      //    border-radius: 25px;
+      //    font-size: 20px;
+      //    font-weight: 600;
+      //    padding: 10px 17px;
+      //    background-color: rgba(0, 0, 255, 0.7);
+      //    color: white;
+      //    cursor: pointer;
+      //  }
+      //}
     }
   }
 }
