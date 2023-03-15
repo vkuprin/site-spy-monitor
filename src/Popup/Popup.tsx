@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { browser, type Tabs } from 'webextension-polyfill-ts'
+import { browser, Tabs } from 'webextension-polyfill-ts'
 
 import './styles.scss'
 
-async function openWebPage (url: string): Promise<Tabs.Tab> {
-  return browser.tabs.create({ url })
+async function openWebPage (url: string): Promise<any> {
+  return await browser.tabs.create({ url })
 }
 
 const Popup: React.FC = () => {

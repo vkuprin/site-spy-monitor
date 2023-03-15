@@ -22,9 +22,9 @@
 
   "content_security_policy": "script-src 'self'; object-src 'self'",
 
-  "__chrome|firefox__author": "abhijithvijayan",
+  "__chrome|firefox__author": "vkuprin",
   "__opera__developer": {
-    "name": "abhijithvijayan"
+    "name": "vkuprin"
   },
 
   "__firefox__applications": {

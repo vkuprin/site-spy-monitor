@@ -30,7 +30,9 @@ module.exports = {
     'node/no-unpublished-import': 0,
     'node/no-unsupported-features/es-syntax': 0,
     '@typescript-eslint/prefer-nullish-coalescing': 0,
-    '@typescript-eslint/strict-boolean-expressions': 0
+    '@typescript-eslint/strict-boolean-expressions': 0,
+    'consistent-type-imports': 0,
+    '@typescript-eslint/consistent-type-imports': 0
   },
   settings: {
     node: {

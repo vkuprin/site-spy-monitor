@@ -14,10 +14,11 @@
 		"useDefineForClassFields": true,
 		"skipLibCheck": true,
 		"jsx": "react",
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
 	},
 	"include": [
-		"source",
-		"webpack.config.js"
+		"src",
+		"webpack.config.js",
+		"src/Popup/Popup.tsx" // Add the file path to the include array
 	]
 }
