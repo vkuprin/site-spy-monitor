@@ -19,6 +19,7 @@
 	"include": [
 		"src",
 		"webpack.config.js",
-		"src/Popup/Popup.tsx" // Add the file path to the include array
+		"src/components/Popup/Popup.tsx"
+		// Add the file path to the include array
 	]
 }
