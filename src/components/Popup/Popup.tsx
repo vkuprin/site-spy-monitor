@@ -1,31 +1,48 @@
-import * as React from 'react'
 import { browser, Tabs } from 'webextension-polyfill-ts'
-import { Button } from 'antd'
+import { Button, Input } from 'antd'
+import React, { useState } from 'react'
 
 import './styles.scss'
+import saveWebsiteContext from '../../utils/saveWebsiteContext'
+import isWebsiteVersionSame from '../../utils/isWebsiteVersionSame'
 
-const openWebPage = async (url: string): Promise<any> => await browser.tabs.create({ url })
+const openWebPage = async (url: string): Promise<Tabs.Tab> => {
+  return await browser.tabs.create({ url })
+}
 
-const Popup: React.FC = () => {
+const Popup = () => {
+  const [url, setUrl] = useState('')
+
+  const handleTrackByPage = async () => {
+    const dom = await browser.tabs.sendMessage(tabs[0].id, { type: 'getDom' })
+    console.log(dom)
+    await saveWebsiteContext(url)
+    const isSameVersion = await isWebsiteVersionSame(url)
+    console.log(`Is the website version the same? ${isSameVersion}`)
+  }
+
+  const handleOptionsButtonClick = async (): Promise<Tabs.Tab> => {
+    return await openWebPage('options.html')
+  }
+
   return (
-    <section id="popup">
-       <h2>Veextension</h2>
-      <button
-        id="options__button"
-        type="button"
-        onClick={async (): Promise<Tabs.Tab> => {
-          return await openWebPage('options.html')
-        }}
-      >
-        Options Page
-      </button>
-      <div className="links__holder">
-          <ul>
-              <li><Button>Track by element</Button></li>
-              <li><Button>Track by entire page</Button></li>
-          </ul>
-      </div>
-    </section>
+        <section id="popup">
+            <button
+                id="options__button"
+                type="button"
+                onClick={handleOptionsButtonClick}
+            >
+                Options Page
+            </button>
+            <div className="links__holder">
+                <ul>
+                    <li>
+                        <Input placeholder="Enter URL" value={url} onChange={(e) => { setUrl(e.target.value) }} />
+                        <Button onClick={handleTrackByPage}>Track by entire page</Button>
+                    </li>
+                </ul>
+            </div>
+        </section>
   )
 }
 

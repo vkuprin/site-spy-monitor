@@ -1,3 +1,8 @@
 console.log('hello world from content script')
 
-export {}
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'getDom') {
+    const dom = document.documentElement.outerHTML
+    sendResponse({ dom })
+  }
+})
