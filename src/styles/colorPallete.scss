@@ -1,0 +1,23 @@
+// https://coolors.co/palette/6d623e-000000-ae8a4e-000000-f9f0a2-000000-bd9a5a-000000-010100-cba561
+
+/* SCSS Colors */
+$field-drab: #6D623E;
+$black: #000000;
+$lion: #AE8A4E;
+$vanilla: #F9F0A2;
+$lion-2: #BD9A5A;
+$almost-black: #010100;
+$earth-yellow: #CBA561;
+
+/* SCSS Gradient */
+$gradient-colors: $field-drab, $black, $lion, $black, $vanilla, $black, $lion-2, $black, $almost-black, $earth-yellow;
+
+$gradient-top: linear-gradient(0deg, $gradient-colors);
+$gradient-right: linear-gradient(90deg, $gradient-colors);
+$gradient-bottom: linear-gradient(180deg, $gradient-colors);
+$gradient-left: linear-gradient(270deg, $gradient-colors);
+$gradient-top-right: linear-gradient(45deg, $gradient-colors);
+$gradient-bottom-right: linear-gradient(135deg, $gradient-colors);
+$gradient-top-left: linear-gradient(225deg, $gradient-colors);
+$gradient-bottom-left: linear-gradient(315deg, $gradient-colors);
+$gradient-radial: radial-gradient($gradient-colors);
