@@ -1,0 +1,123 @@
+//@import "../../styles/fonts";
+//@import "../../styles/variables";
+@import url("https://fonts.googleapis.com/css?family=Nunito:400,600");
+
+// colors
+$black: #0d0d0d;
+$greyWhite: #f3f3f3;
+$skyBlue: #8892b0;
+
+// fonts
+$nunito: "Nunito", sans-serif;
+
+// font weights
+$thin: 100;
+$exlight: 200;
+$light: 300;
+$regular: 400;
+$medium: 500;
+$semibold: 600;
+$bold: 700;
+$exbold: 800;
+$exblack: 900;
+
+// other variables
+.d-none {
+  display: none !important;
+}
+
+html {
+  color: #53a1b3;
+  color-scheme: dark;
+}
+
+body {
+  border: 2px solid white;
+  align-items: stretch;
+  box-sizing: content-box;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 1rem;
+  position: relative;
+  width: 15rem;
+  font-family: Open Sans, Segoe UI, Helvetica Neue, Ubuntu, sans-serif;
+  font-size: 0.75rem;
+}
+
+#popup {
+  color: #53a1b3;
+  color-scheme: dark;
+  font-family: Open Sans, Segoe UI, Helvetica Neue, Ubuntu, sans-serif;
+  font-size: 0.75rem;
+  left: 50%;
+  pointer-events: none;
+  position: fixed;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 125ms ease-out;
+  width: 17rem;
+  z-index: 999;
+  background-color: rgba(20, 30, 36, 0);
+  height: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1f1f1f;
+  color: white;
+  height: 70px;
+}
+
+.shortcut {
+  color: white;
+  text-decoration: none;
+  border: 2px solid white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 15px; /* Added margin for space */
+}
+
+.shortcut:hover {
+  background-color: white;
+  color: #1f1f1f;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  flex-direction: row;
+}
+
+.btn-track {
+  color: black;
+  margin: 10px;
+}
+
+/* Removed hover effect for List item */
+
+/* Styles for Ant Design List */
+.ant-list-item {
+  background: green;
+  color: white;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  //padding: 10px;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /* Added box shadow */
+}
+
+.ant-list-item .anticon {
+  color: #68c967; /* Changed the color of the icon */
+}
+
+.ant-list-item-meta-title {
+  color: #68c967; /* Changed the color of the title */
+}
