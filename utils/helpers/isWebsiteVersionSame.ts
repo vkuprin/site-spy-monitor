@@ -1,5 +1,6 @@
-import { db } from '../../../veextension/src/database'
 import getWebsiteContent from './getWebsiteContent'
+
+const db: any = {}
 
 const isWebsiteVersionSame = async (url: string) => {
   try {
