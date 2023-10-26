@@ -1,16 +1,16 @@
-//@import "../../styles/fonts";
-//@import "../../styles/variables";
+// @import "../../styles/fonts";
+// @import "../../styles/variables";
 @import url("https://fonts.googleapis.com/css?family=Nunito:400,600");
 
-// colors
+// Colors
 $black: #0d0d0d;
 $greyWhite: #f3f3f3;
 $skyBlue: #8892b0;
 
-// fonts
+// Fonts
 $nunito: "Nunito", sans-serif;
 
-// font weights
+// Font weights
 $thin: 100;
 $exlight: 200;
 $light: 300;
@@ -21,7 +21,7 @@ $bold: 700;
 $exbold: 800;
 $exblack: 900;
 
-// other variables
+// Other variables
 .d-none {
   display: none !important;
 }
@@ -32,34 +32,47 @@ html {
 }
 
 body {
-  border: 2px solid white;
   align-items: stretch;
   box-sizing: content-box;
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1.5rem;
   position: relative;
-  width: 15rem;
+  width: 22.5rem;
   font-family: Open Sans, Segoe UI, Helvetica Neue, Ubuntu, sans-serif;
-  font-size: 0.75rem;
+  font-size: 1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.container-selector {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  h1 {
+    margin-bottom: 10px;
+  }
 }
 
 #popup {
   color: #53a1b3;
   color-scheme: dark;
   font-family: Open Sans, Segoe UI, Helvetica Neue, Ubuntu, sans-serif;
-  font-size: 0.75rem;
+  font-size: 1.125rem;
   left: 50%;
   pointer-events: none;
   position: fixed;
   top: 50%;
   transform: translate(-50%, -50%);
   transition: background-color 125ms ease-out;
-  width: 17rem;
+  width: 25.5rem;
   z-index: 999;
   background-color: rgba(20, 30, 36, 0);
-  height: 20px;
+  height: 30px;
 }
 
 .header {
@@ -68,18 +81,18 @@ body {
   justify-content: center;
   background-color: #1f1f1f;
   color: white;
-  height: 70px;
+  height: 105px;
 }
 
 .shortcut {
   color: white;
   text-decoration: none;
-  border: 2px solid white;
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  transition: all 0.3s ease-in-out;
-  margin-bottom: 15px; /* Added margin for space */
+  border: 3px solid white;
+  padding: 7.5px 15px;
+  border-radius: 30px;
+  font-size: 1.35rem;
+  transition: all 0.45s ease-in-out;
+  margin-bottom: 22.5px;
 }
 
 .shortcut:hover {
@@ -91,33 +104,34 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
   flex-direction: row;
 }
 
 .btn-track {
   color: black;
-  margin: 10px;
+  margin-top: 20px;
 }
 
-/* Removed hover effect for List item */
-
-/* Styles for Ant Design List */
 .ant-list-item {
-  background: green;
   color: white;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  //padding: 10px;
-  border-radius: 5px;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /* Added box shadow */
+  margin-top: 40px;
+  margin-bottom: 40px;
+  border-radius: 7.5px;
+  transition: all 0.45s ease-in-out;
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 9px 30px 0 rgba(0, 0, 0, 0.19);
 }
 
 .ant-list-item .anticon {
-  color: #68c967; /* Changed the color of the icon */
+  color: #68c967 !important;
+  font-size: 1.5rem;
 }
 
 .ant-list-item-meta-title {
-  color: #68c967; /* Changed the color of the title */
+  color: #68c967 !important;
+  font-size: 1.5rem;
+}
+
+.ant-list-item-meta-description {
+  color: white !important;
+  font-size: 1.25rem;
 }
