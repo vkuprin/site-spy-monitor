@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactElement } from 'react';
-import { Button, Input, List, notification, Select, ConfigProvider, theme, Popconfirm, Card, Modal } from 'antd';
+import { Button, Input, List, notification, Select, ConfigProvider, theme, Popconfirm, Card } from 'antd';
 import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
@@ -9,12 +9,16 @@ import './styles.scss';
 
 import trackedWebsitesStorage from '@src/shared/storages/trackedWebsitesStorage';
 import doesWebsiteExist from '@root/utils/helpers/doesWebsiteExist';
+import truncate from '@root/utils/helpers/truncate';
+
+const DEFAULT_VALUE = 'example.com';
 
 const Popup = (): ReactElement => {
   // const storageData = useStorage(websitesStorage);
-  const [open, setOpen] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [url, setUrl] = useState('');
+  const [open, setOpen] = useState<boolean>(false);
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
+  const [url, setUrl] = useState<string>(DEFAULT_VALUE);
+  const [urlPrefix, setUrlPrefix] = useState<string>('http://');
   const [intervalTime, setIntervalTime] = useState<number>(15);
   const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
   const [hasChanged, setHasChanged] = useState<Record<string, boolean>>({});
@@ -39,11 +43,11 @@ const Popup = (): ReactElement => {
 
   const handleStartTracking = async () => {
     if (url && intervalTime) {
-      const exists = await doesWebsiteExist(url);
+      const exists = await doesWebsiteExist(urlPrefix + url);
       if (!exists) {
         showPopconfirm(); // Show the Popconfirm if the website doesn't exist
       } else {
-        addToTrackedWebsites(url); // Directly add the website if it exists
+        addToTrackedWebsites(urlPrefix + url); // Directly add the website if it exists
       }
     }
   };
@@ -59,7 +63,7 @@ const Popup = (): ReactElement => {
         message: 'Website Updated',
         description: `The website ${url} has been updated.`,
       });
-      setHasChanged(prev => ({ ...prev, [url]: true }));
+      setHasChanged(prev => ({ ...prev, [urlPrefix + url]: true }));
     }
   };
 
@@ -96,9 +100,20 @@ const Popup = (): ReactElement => {
     setOpen(false);
   };
 
-  const truncate = (str: string, n: number) => {
-    return str.length > n ? str.slice(0, n - 1) + '...' : str;
-  };
+  const { Option } = Select;
+
+  const selectBefore = (
+    <Select
+      defaultValue="https://"
+      onChange={value => setUrlPrefix(value)}
+      style={{
+        width: 75,
+        textAlign: 'center',
+      }}>
+      <Option value="https://">https://</Option>
+      <Option value="http://">http://</Option>
+    </Select>
+  );
 
   return (
     <ConfigProvider
@@ -107,17 +122,12 @@ const Popup = (): ReactElement => {
       }}>
       <div className="container">
         <header className="header">
-          <h1
-            style={{
-              marginLeft: 10,
-            }}>
-            Vee Tracker
-          </h1>
+          <h1 style={{ marginLeft: 10 }}>Vee Tracker</h1>
         </header>
         <div className="container-selector">
-          <h1 className="container-selector__title">Enter the URL of a website to track:</h1>
+          <h1 className="container-selector__title">Enter full website URL to track:</h1>
           <div className="btn-container">
-            <Input value={url} onChange={e => setUrl(e.target.value)} placeholder="Website URL" />
+            <Input addonBefore={selectBefore} defaultValue={DEFAULT_VALUE} onChange={e => setUrl(e.target.value)} />
           </div>
         </div>
         <div className="container-selector">
