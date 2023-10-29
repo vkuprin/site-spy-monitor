@@ -141,6 +141,11 @@ const Popup = (): ReactElement => {
     </Select>
   );
 
+  const handleIntervalChange = (value: number) => {
+    setIntervalTime(value);
+    chrome.storage.local.set({ intervalTime: value });
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -166,7 +171,7 @@ const Popup = (): ReactElement => {
           <Select
             className="input--full-width"
             placeholder="Interval"
-            onChange={value => setIntervalTime(value)}
+            onChange={handleIntervalChange}
             value={intervalTime}>
             <Select.Option value={30}>30s</Select.Option>
             <Select.Option value={60}>1m</Select.Option>

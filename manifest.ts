@@ -10,7 +10,7 @@ const manifest: chrome.runtime.ManifestV3 = {
   description: packageJson.description,
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  permissions: ['alarms', 'notifications', 'storage', 'http://*/*', 'https://*/*'],
+  permissions: ['alarms', 'notifications', 'storage'],
   options_page: 'src/pages/options/index.html',
   background: {
     service_worker: 'src/pages/background/index.js',
