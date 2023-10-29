@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactElement } from 'react';
-import { Button, Input, List, notification, Select, ConfigProvider, theme, Popconfirm, Card } from 'antd';
+import { Button, Input, List, notification, Select, ConfigProvider, theme, Popconfirm, Card, Spin } from 'antd';
 import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
@@ -12,17 +12,15 @@ import doesWebsiteExist from '@root/utils/helpers/doesWebsiteExist';
 import truncate from '@root/utils/helpers/truncate';
 import * as diff from 'diff';
 
-const DEFAULT_VALUE = 'example.com';
-
 const Popup = (): ReactElement => {
   // const storageData = useStorage(websitesStorage);
   const [websiteDiffs, setWebsiteDiffs] = useState<Record<string, diff.Change[]>>({});
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
-  const [url, setUrl] = useState<string>(DEFAULT_VALUE);
+  const [url, setUrl] = useState<string>('');
   const [urlPrefix, setUrlPrefix] = useState<string>('https://');
-  const [intervalTime, setIntervalTime] = useState<number>(15);
+  const [intervalTime, setIntervalTime] = useState<number>(30);
   const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
 
   useEffect(() => {
@@ -34,6 +32,7 @@ const Popup = (): ReactElement => {
   }, []);
 
   const addToTrackedWebsites = async (websiteUrl: string) => {
+    setLoading(true);
     const newWebsite = {
       url: websiteUrl,
       content: '', // will be replaced shortly after
@@ -42,6 +41,7 @@ const Popup = (): ReactElement => {
     await trackedWebsitesStorage.saveContent(websiteUrl); // fetch and save the current content
     setTrackedWebsites(prev => [...prev, websiteUrl]);
     setUrl('');
+    setLoading(false);
   };
 
   const handleStartTracking = async () => {
@@ -53,6 +53,7 @@ const Popup = (): ReactElement => {
         addToTrackedWebsites(urlPrefix + url); // Directly add the website if it exists
       }
     }
+    setUrl('');
   };
 
   const showPopconfirm = () => {
@@ -60,6 +61,7 @@ const Popup = (): ReactElement => {
   };
 
   const checkWebsiteChanges = async (url: string): Promise<void> => {
+    setLoading(true);
     const isSameVersion = await trackedWebsitesStorage.isVersionSame(url);
     if (!isSameVersion) {
       // notification.open({
@@ -76,6 +78,7 @@ const Popup = (): ReactElement => {
         placement: 'bottomRight',
       });
     }
+    setLoading(false);
   };
 
   const handleRemoveWebsite = async (websiteUrl: string) => {
@@ -138,7 +141,7 @@ const Popup = (): ReactElement => {
         <div className="container-selector">
           <h1 className="container-selector__title">Enter full website URL to track:</h1>
           <div className="btn-container">
-            <Input addonBefore={selectBefore} defaultValue={DEFAULT_VALUE} onChange={e => setUrl(e.target.value)} />
+            <Input addonBefore={selectBefore} onChange={e => setUrl(e.target.value)} placeholder="example.com" />
           </div>
         </div>
         <div className="container-selector">
@@ -148,18 +151,19 @@ const Popup = (): ReactElement => {
             placeholder="Interval"
             onChange={value => setIntervalTime(value)}
             value={intervalTime}>
-            <Select.Option value={15}>15s</Select.Option>
             <Select.Option value={30}>30s</Select.Option>
             <Select.Option value={60}>1m</Select.Option>
+            <Select.Option value={120}>2m</Select.Option>
+            <Select.Option value={300}>5m</Select.Option>
           </Select>
         </div>
         <Popconfirm
-          title={`The website ${url} does not seem to exist. Do you still want to add it?`}
+          title={`The website ${urlPrefix + url} does not seem to exist. Do you still want to add it?`}
           open={open}
           onConfirm={handleConfirm}
           okButtonProps={{ loading: confirmLoading }}
           onCancel={handleCancel}>
-          <Button className="btn--track text--white" onClick={handleStartTracking}>
+          <Button className="btn--track text--white" onClick={handleStartTracking} loading={loading}>
             Track
           </Button>
         </Popconfirm>
@@ -216,4 +220,7 @@ const Popup = (): ReactElement => {
   );
 };
 
-export default withErrorBoundary(withSuspense(Popup, <div> Loading ... </div>), <div> Error Occur </div>);
+export default withErrorBoundary(
+  withSuspense(Popup, <div> Loading ... </div>),
+  <div> Error Occur, please reload extension </div>,
+);
