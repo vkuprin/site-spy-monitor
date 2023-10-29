@@ -34,9 +34,10 @@ const Popup = (): ReactElement => {
   const addToTrackedWebsites = async (websiteUrl: string) => {
     const newWebsite = {
       url: websiteUrl,
-      content: '', // initially empty, can be populated later
+      content: '', // will be replaced shortly after
     };
     await trackedWebsitesStorage.addWebsite(newWebsite);
+    await trackedWebsitesStorage.saveContent(websiteUrl); // fetch and save the current content
     setTrackedWebsites(prev => [...prev, websiteUrl]);
     setUrl('');
   };
