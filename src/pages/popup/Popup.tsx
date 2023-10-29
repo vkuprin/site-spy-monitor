@@ -1,21 +1,22 @@
 import React, { useState, useEffect, ReactElement } from 'react';
-import { Button, Input, List, notification, Select, ConfigProvider, theme } from 'antd';
+import { Button, Input, List, notification, Select, ConfigProvider, theme, Popconfirm, Card, Modal } from 'antd';
 import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
-import { CloseOutlined, GlobalOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 
 import './styles.scss';
 
 import trackedWebsitesStorage from '@src/shared/storages/trackedWebsitesStorage';
+import doesWebsiteExist from '@root/utils/helpers/doesWebsiteExist';
 
 const Popup = (): ReactElement => {
   // const storageData = useStorage(websitesStorage);
-
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const [url, setUrl] = useState('');
   const [intervalTime, setIntervalTime] = useState<number>(15);
   const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
-  const [checkCount, setCheckCount] = useState<Record<string, number>>({});
   const [hasChanged, setHasChanged] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -26,16 +27,29 @@ const Popup = (): ReactElement => {
     loadWebsites();
   }, []);
 
+  const addToTrackedWebsites = async (websiteUrl: string) => {
+    const newWebsite = {
+      url: websiteUrl,
+      content: '', // initially empty, can be populated later
+    };
+    await trackedWebsitesStorage.addWebsite(newWebsite);
+    setTrackedWebsites(prev => [...prev, websiteUrl]);
+    setUrl('');
+  };
+
   const handleStartTracking = async () => {
     if (url && intervalTime) {
-      const newWebsite = {
-        url: url,
-        content: '', // initially empty, can be populated later
-      };
-      await trackedWebsitesStorage.addWebsite(newWebsite);
-      setTrackedWebsites(prev => [...prev, url]);
-      setUrl('');
+      const exists = await doesWebsiteExist(url);
+      if (!exists) {
+        showPopconfirm(); // Show the Popconfirm if the website doesn't exist
+      } else {
+        addToTrackedWebsites(url); // Directly add the website if it exists
+      }
     }
+  };
+
+  const showPopconfirm = () => {
+    setOpen(true);
   };
 
   const checkWebsiteChanges = async (url: string): Promise<void> => {
@@ -47,11 +61,6 @@ const Popup = (): ReactElement => {
       });
       setHasChanged(prev => ({ ...prev, [url]: true }));
     }
-
-    setCheckCount(prev => {
-      const currentCount = prev[url] || 0;
-      return { ...prev, [url]: currentCount + 1 };
-    });
   };
 
   const handleRemoveWebsite = async (websiteUrl: string) => {
@@ -72,6 +81,24 @@ const Popup = (): ReactElement => {
       });
     };
   }, [trackedWebsites, intervalTime, hasChanged]);
+
+  const handleConfirm = () => {
+    setConfirmLoading(true);
+    setTimeout(() => {
+      addToTrackedWebsites(url);
+      setOpen(false);
+      setConfirmLoading(false);
+    }, 2000); // Here, we're simulating an async operation with a timeout of 2 seconds
+  };
+
+  const handleCancel = () => {
+    console.log('Clicked cancel button');
+    setOpen(false);
+  };
+
+  const truncate = (str: string, n: number) => {
+    return str.length > n ? str.slice(0, n - 1) + '...' : str;
+  };
 
   return (
     <ConfigProvider
@@ -105,33 +132,44 @@ const Popup = (): ReactElement => {
             <Select.Option value={60}>1m</Select.Option>
           </Select>
         </div>
-        <Button className="btn--track text--white" onClick={handleStartTracking}>
-          Track
-        </Button>
+        <Popconfirm
+          title={`The website ${url} does not seem to exist. Do you still want to add it?`}
+          open={open}
+          onConfirm={handleConfirm}
+          okButtonProps={{ loading: confirmLoading }}
+          onCancel={handleCancel}>
+          <Button className="btn--track text--white" onClick={handleStartTracking}>
+            Track
+          </Button>
+        </Popconfirm>
         <List
           itemLayout="horizontal"
           dataSource={trackedWebsites}
+          grid={{
+            gutter: 16,
+            xs: 1,
+            sm: 2,
+            md: 4,
+            lg: 4,
+            xl: 6,
+            xxl: 3,
+          }}
           renderItem={website => (
-            <List.Item
-              actions={[
-                <CloseOutlined
-                  key="list-close"
-                  onClick={async () => {
-                    await handleRemoveWebsite(website);
-                  }}
-                />,
-              ]}
-              className={`border--dynamic ${hasChanged[website] ? 'border--red' : 'border--green'}`}>
-              <List.Item.Meta
-                avatar={<img className="favicon" src={`${website}/favicon.ico`} alt="" />}
-                title={<span className="list__meta-title">{website}</span>}
-                description={
-                  <span className="list__meta-description">
-                    Counter: {checkCount[website] || 0}, Next check in:
-                    {intervalTime - ((checkCount[website] || 0) % intervalTime)}s
+            <List.Item>
+              <Card
+                title={
+                  <span
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                    }}>
+                    <img className="favicon" src={`${website}/favicon.ico`} alt="" />
+                    {truncate(website, 20)}
+                    <CloseOutlined onClick={() => handleRemoveWebsite(website)} />
                   </span>
-                }
-              />
+                }>
+                {/* Put here exactly what has changed like info */}
+              </Card>
             </List.Item>
           )}
         />
