@@ -47,12 +47,12 @@ async function initialize() {
 
 initialize();
 
-chrome.notifications.create({
-  type: 'basic',
-  iconUrl: absoluteIconPath,
-  title: 'Vee Tracker was installed',
-  message: 'Ensure browser notifications are enabled for website change notifications.',
-});
+// chrome.notifications.create({
+//   type: 'basic',
+//   iconUrl: absoluteIconPath,
+//   title: 'Vee Tracker was installed',
+//   message: 'Ensure browser notifications are enabled for website change notifications.',
+// });
 
 // Add an alarm listener to trigger the checks
 chrome.alarms.onAlarm.addListener(alarm => {
