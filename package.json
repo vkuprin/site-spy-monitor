@@ -1,11 +1,12 @@
 {
-  "name": "chrome-extension-boilerplate-react-vite",
-  "version": "0.0.1",
-  "description": "chrome extension boilerplate",
+  "name": "website-tracker",
+  "version": "1.0.0",
+  "author": "Vitaly Kuprin",
+  "description": "track and monitor website changes with this web extension",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite.git"
+    "url": "https://github.com/vkuprin/website-change-tracker"
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",
