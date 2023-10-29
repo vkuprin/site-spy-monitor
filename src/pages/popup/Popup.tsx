@@ -10,18 +10,20 @@ import './styles.scss';
 import trackedWebsitesStorage from '@src/shared/storages/trackedWebsitesStorage';
 import doesWebsiteExist from '@root/utils/helpers/doesWebsiteExist';
 import truncate from '@root/utils/helpers/truncate';
+import * as diff from 'diff';
 
 const DEFAULT_VALUE = 'example.com';
 
 const Popup = (): ReactElement => {
   // const storageData = useStorage(websitesStorage);
+  const [websiteDiffs, setWebsiteDiffs] = useState<Record<string, diff.Change[]>>({});
+
   const [open, setOpen] = useState<boolean>(false);
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
   const [url, setUrl] = useState<string>(DEFAULT_VALUE);
   const [urlPrefix, setUrlPrefix] = useState<string>('http://');
   const [intervalTime, setIntervalTime] = useState<number>(15);
   const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
-  const [hasChanged, setHasChanged] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const loadWebsites = async () => {
@@ -60,11 +62,19 @@ const Popup = (): ReactElement => {
   const checkWebsiteChanges = async (url: string): Promise<void> => {
     const isSameVersion = await trackedWebsitesStorage.isVersionSame(url);
     if (!isSameVersion) {
+      // notification.open({
+      //   message: 'Website Updated',
+      //   description: `The website ${url} has been updated.`,
+      // });
+      // setHasChanged(prev => ({ ...prev, [urlPrefix + url]: true }));
+      const changes = await trackedWebsitesStorage.saveContent(url);
+      setWebsiteDiffs(prev => ({ ...prev, [url]: changes }));
+
       notification.open({
         message: 'Website Updated',
         description: `The website ${url} has been updated.`,
+        placement: 'bottomRight',
       });
-      setHasChanged(prev => ({ ...prev, [urlPrefix + url]: true }));
     }
   };
 
@@ -85,7 +95,7 @@ const Popup = (): ReactElement => {
         clearInterval(interval);
       });
     };
-  }, [trackedWebsites, intervalTime, hasChanged]);
+  }, [trackedWebsites, intervalTime]);
 
   const handleConfirm = () => {
     setConfirmLoading(true);
@@ -179,7 +189,22 @@ const Popup = (): ReactElement => {
                     <CloseOutlined onClick={() => handleRemoveWebsite(website)} />
                   </span>
                 }>
-                {/* Put here exactly what has changed like info */}
+                {websiteDiffs[website]?.map((change, index) => {
+                  if (change.added) {
+                    return (
+                      <span key={index} style={{ backgroundColor: 'green' }}>
+                        {change.value}
+                      </span>
+                    );
+                  } else if (change.removed) {
+                    return (
+                      <span key={index} style={{ backgroundColor: 'red' }}>
+                        {change.value}
+                      </span>
+                    );
+                  }
+                  return null;
+                })}
               </Card>
             </List.Item>
           )}
