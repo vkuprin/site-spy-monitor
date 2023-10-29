@@ -21,7 +21,7 @@ const Popup = (): ReactElement => {
   const [open, setOpen] = useState<boolean>(false);
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
   const [url, setUrl] = useState<string>(DEFAULT_VALUE);
-  const [urlPrefix, setUrlPrefix] = useState<string>('http://');
+  const [urlPrefix, setUrlPrefix] = useState<string>('https://');
   const [intervalTime, setIntervalTime] = useState<number>(15);
   const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
 
@@ -193,12 +193,14 @@ const Popup = (): ReactElement => {
                   if (change.added) {
                     return (
                       <span key={index} style={{ backgroundColor: 'green' }}>
+                        <h1>New changes</h1>
                         {change.value}
                       </span>
                     );
                   } else if (change.removed) {
                     return (
                       <span key={index} style={{ backgroundColor: 'red' }}>
+                        <h1>Removed changes</h1>
                         {change.value}
                       </span>
                     );
