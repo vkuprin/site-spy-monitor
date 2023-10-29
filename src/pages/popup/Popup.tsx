@@ -162,7 +162,7 @@ const Popup = (): ReactElement => {
               addonBefore={selectBefore}
               value={url}
               onChange={e => setUrl(e.target.value)}
-              placeholder="example.com"
+              placeholder="Enter website URL"
             />
           </div>
         </div>
