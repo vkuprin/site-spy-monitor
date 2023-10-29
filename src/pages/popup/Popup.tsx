@@ -11,6 +11,7 @@ import trackedWebsitesStorage from '@src/shared/storages/trackedWebsitesStorage'
 import doesWebsiteExist from '@root/utils/helpers/doesWebsiteExist';
 import truncate from '@root/utils/helpers/truncate';
 import * as diff from 'diff';
+import fetchWebsiteSize from '@root/utils/helpers/fetchWebsiteSize';
 
 const Popup = (): ReactElement => {
   // const storageData = useStorage(websitesStorage);
@@ -44,13 +45,30 @@ const Popup = (): ReactElement => {
     setLoading(false);
   };
 
+  const checkSize = async () => {
+    const size = await fetchWebsiteSize(urlPrefix + url);
+    const sizeCheck = size > 99999;
+
+    if (sizeCheck) {
+      notification.open({
+        message: 'Website too big',
+        description: `The website ${url} is too big to track.`,
+        placement: 'bottomRight',
+      });
+    }
+
+    return sizeCheck;
+  };
+
   const handleStartTracking = async () => {
     if (url && intervalTime) {
       const exists = await doesWebsiteExist(urlPrefix + url);
+
       if (!exists) {
         showPopconfirm(); // Show the Popconfirm if the website doesn't exist
       } else {
-        addToTrackedWebsites(urlPrefix + url); // Directly add the website if it exists
+        if (await checkSize()) return;
+        await addToTrackedWebsites(urlPrefix + url); // Directly add the website if it exists
       }
     }
     setUrl('');
@@ -64,11 +82,6 @@ const Popup = (): ReactElement => {
     setLoading(true);
     const isSameVersion = await trackedWebsitesStorage.isVersionSame(url);
     if (!isSameVersion) {
-      // notification.open({
-      //   message: 'Website Updated',
-      //   description: `The website ${url} has been updated.`,
-      // });
-      // setHasChanged(prev => ({ ...prev, [urlPrefix + url]: true }));
       const changes = await trackedWebsitesStorage.saveContent(url);
       setWebsiteDiffs(prev => ({ ...prev, [url]: changes }));
 
@@ -110,7 +123,6 @@ const Popup = (): ReactElement => {
   };
 
   const handleCancel = () => {
-    console.log('Clicked cancel button');
     setOpen(false);
   };
 
@@ -141,7 +153,12 @@ const Popup = (): ReactElement => {
         <div className="container-selector">
           <h1 className="container-selector__title">Enter full website URL to track:</h1>
           <div className="btn-container">
-            <Input addonBefore={selectBefore} onChange={e => setUrl(e.target.value)} placeholder="example.com" />
+            <Input
+              addonBefore={selectBefore}
+              value={url}
+              onChange={e => setUrl(e.target.value)}
+              placeholder="example.com"
+            />
           </div>
         </div>
         <div className="container-selector">
