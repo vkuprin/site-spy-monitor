@@ -24,4 +24,4 @@ shadowRoot.appendChild(rootIntoShadow);
  */
 attachTwindStyle(rootIntoShadow, shadowRoot);
 
-createRoot(rootIntoShadow).render(<App />);
+// createRoot(rootIntoShadow).render(<App />);
