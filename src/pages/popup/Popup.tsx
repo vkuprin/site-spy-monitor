@@ -47,13 +47,23 @@ const Popup = (): ReactElement => {
 
   const checkSize = async () => {
     const size = await fetchWebsiteSize(urlPrefix + url);
-    const sizeCheck = size > 99999;
+    const sizeCheck = size > 999999;
 
     if (sizeCheck) {
       notification.open({
-        message: 'Website too big, please wait for fetch to complete.',
-        description: `The website ${url} is too big to track.`,
-        placement: 'bottomRight',
+        message: 'Please wait',
+        description: (
+          <>
+            The website <br />{' '}
+            {
+              <span style={{ color: '#53a1b3' }}>
+                <a href={urlPrefix + url}>{url}</a>
+              </span>
+            }
+            <br /> is too big to track
+          </>
+        ),
+        placement: 'top',
       });
     }
 
