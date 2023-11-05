@@ -51,7 +51,7 @@ const Popup = (): ReactElement => {
 
     if (sizeCheck) {
       notification.open({
-        message: 'Website too big',
+        message: 'Website too big, please wait for fetch to complete.',
         description: `The website ${url} is too big to track.`,
         placement: 'bottomRight',
       });
@@ -67,11 +67,10 @@ const Popup = (): ReactElement => {
       if (!exists) {
         showPopconfirm(); // Show the Popconfirm if the website doesn't exist
       } else {
-        if (await checkSize()) return;
+        await checkSize();
         await addToTrackedWebsites(urlPrefix + url); // Directly add the website if it exists
       }
     }
-    setUrl('');
   };
 
   const showPopconfirm = () => {
@@ -130,6 +129,7 @@ const Popup = (): ReactElement => {
 
   const selectBefore = (
     <Select
+      value={urlPrefix}
       defaultValue="https://"
       onChange={value => setUrlPrefix(value)}
       style={{
@@ -146,6 +146,17 @@ const Popup = (): ReactElement => {
     chrome.storage.local.set({ intervalTime: value });
   };
 
+  // Effect to update the protocol dropdown and remove the protocol from the URL input
+  useEffect(() => {
+    const protocolPattern = /^(http:\/\/|https:\/\/)/;
+    const match = url.match(protocolPattern);
+
+    if (match) {
+      setUrlPrefix(match[0]); // Set the dropdown to the matched protocol
+      setUrl(url.replace(protocolPattern, '')); // Remove the protocol from the URL
+    }
+  }, [url]);
+
   return (
     <ConfigProvider
       theme={{
@@ -153,7 +164,7 @@ const Popup = (): ReactElement => {
       }}>
       <div className="container">
         <header className="header">
-          <h1 style={{ marginLeft: 10 }}>Vee Tracker</h1>
+          <h1>Vee Tracker</h1>
         </header>
         <div className="container-selector">
           <h1 className="container-selector__title">Enter full website URL to track:</h1>
@@ -161,7 +172,18 @@ const Popup = (): ReactElement => {
             <Input
               addonBefore={selectBefore}
               value={url}
-              onChange={e => setUrl(e.target.value)}
+              onChange={e => {
+                const inputVal = e.target.value;
+                const protocolPattern = /^(http:\/\/|https:\/\/)/;
+                const match = inputVal.match(protocolPattern);
+
+                if (match) {
+                  setUrlPrefix(match[0]); // Set the dropdown to the matched protocol
+                  setUrl(inputVal.replace(protocolPattern, '')); // Remove the protocol from the URL
+                } else {
+                  setUrl(inputVal); // Set URL normally if no protocol match
+                }
+              }}
               placeholder="Enter website URL"
             />
           </div>
@@ -243,6 +265,6 @@ const Popup = (): ReactElement => {
 };
 
 export default withErrorBoundary(
-  withSuspense(Popup, <div> Loading ... </div>),
-  <div> Error Occur, please reload extension </div>,
+  withSuspense(Popup, <Spin size="large" />),
+  <div>Error Occur, please reload extension</div>,
 );

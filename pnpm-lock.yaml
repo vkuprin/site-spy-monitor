@@ -151,6 +151,9 @@ devDependencies:
   vite:
     specifier: 3.2.7
     version: 3.2.7(@types/node@18.15.11)(sass@1.62.1)
+  vite-plugin-remove-console:
+    specifier: ^2.1.1
+    version: 2.1.1
   ws:
     specifier: 8.13.0
     version: 8.13.0
@@ -7248,6 +7251,10 @@ packages:
     dependencies:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
+    dev: true
+
+  /vite-plugin-remove-console@2.1.1:
+    resolution: {integrity: sha512-AQOsKl9+1YO82otwSchf+P8SRo4RhMvPjOvjm9DXOnkff0SBwBPAzazEn06IUjhsm/zX4miMgicCQH1hPdktrw==}
     dev: true
 
   /vite@3.2.7(@types/node@18.15.11)(sass@1.62.1):
