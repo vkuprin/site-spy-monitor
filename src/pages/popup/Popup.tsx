@@ -115,7 +115,7 @@ const Popup = (): ReactElement => {
   const handleConfirm = () => {
     setConfirmLoading(true);
     setTimeout(() => {
-      addToTrackedWebsites(url);
+      addToTrackedWebsites(urlPrefix + url);
       setOpen(false);
       setConfirmLoading(false);
     }, 2000); // Here, we're simulating an async operation with a timeout of 2 seconds
@@ -214,9 +214,6 @@ const Popup = (): ReactElement => {
         <List
           itemLayout="horizontal"
           dataSource={trackedWebsites}
-          locale={{
-            emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Results will be displayed here" />,
-          }}
           grid={{
             gutter: 16,
             xs: 1,
