@@ -214,6 +214,9 @@ const Popup = (): ReactElement => {
         <List
           itemLayout="horizontal"
           dataSource={trackedWebsites}
+          locale={{
+            emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Result will be displayed here" />,
+          }}
           grid={{
             gutter: 16,
             xs: 1,
