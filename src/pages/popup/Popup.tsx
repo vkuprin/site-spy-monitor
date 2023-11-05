@@ -14,7 +14,6 @@ import * as diff from 'diff';
 import fetchWebsiteSize from '@root/utils/helpers/fetchWebsiteSize';
 
 const Popup = (): ReactElement => {
-  // const storageData = useStorage(websitesStorage);
   const [websiteDiffs, setWebsiteDiffs] = useState<Record<string, diff.Change[]>>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -174,7 +173,7 @@ const Popup = (): ReactElement => {
       }}>
       <div className="container">
         <header className="header">
-          <h1>Vee Tracker</h1>
+          <h1>Site Spy</h1>
         </header>
         <div className="container-selector">
           <h1 className="container-selector__title">Enter full website URL to track:</h1>
