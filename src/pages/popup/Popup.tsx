@@ -253,14 +253,12 @@ const Popup = (): ReactElement => {
                   if (change.added) {
                     return (
                       <span key={index} style={{ backgroundColor: 'green' }}>
-                        <h1>New changes</h1>
                         {change.value}
                       </span>
                     );
                   } else if (change.removed) {
                     return (
                       <span key={index} style={{ backgroundColor: 'red' }}>
-                        <h1>Removed changes</h1>
                         {change.value}
                       </span>
                     );
