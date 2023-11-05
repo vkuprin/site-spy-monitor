@@ -18,6 +18,7 @@
     "dev": "pnpm build:hmr && (run-p wss build:watch)",
     "dev:firefox": "pnpm build:hmr && (run-p wss build:firefox:watch)",
     "test": "jest",
+    "test:site": "bun --watch test/test-site/index.cjs",
     "commitlint": "commitlint --edit",
     "lint": "eslint src --ext .ts",
     "lint:fix": "pnpm lint -- --fix",
