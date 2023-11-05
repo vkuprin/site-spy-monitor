@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactElement } from 'react';
-import { Button, Input, List, notification, Select, ConfigProvider, theme, Popconfirm, Card, Spin } from 'antd';
+import { Button, Input, List, notification, Select, ConfigProvider, theme, Popconfirm, Card, Spin, Empty } from 'antd';
 import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
@@ -184,12 +184,12 @@ const Popup = (): ReactElement => {
                   setUrl(inputVal); // Set URL normally if no protocol match
                 }
               }}
-              placeholder="Enter website URL"
+              placeholder="Enter website URL to monitor"
             />
           </div>
         </div>
         <div className="container-selector">
-          <h1 className="container-selector__title">Enter an interval to check for changes:</h1>
+          <h1 className="container-selector__title">Check every:</h1>
           <Select
             className="input--full-width"
             placeholder="Interval"
@@ -208,12 +208,15 @@ const Popup = (): ReactElement => {
           okButtonProps={{ loading: confirmLoading }}
           onCancel={handleCancel}>
           <Button className="btn--track text--white" onClick={handleStartTracking} loading={loading}>
-            Track
+            Start Tracking
           </Button>
         </Popconfirm>
         <List
           itemLayout="horizontal"
           dataSource={trackedWebsites}
+          locale={{
+            emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Results will be displayed here" />,
+          }}
           grid={{
             gutter: 16,
             xs: 1,

@@ -1,6 +1,24 @@
 @import url("https://fonts.googleapis.com/css?family=Nunito:400,600");
 
-$nunito: "Nunito", sans-serif;
+// Color variables
+$color-main: #53a1b3;
+$color-black: black;
+$color-white: white;
+$color-shadow: rgba(0, 0, 0, 0.2);
+$color-shadow-deep: rgba(0, 0, 0, 0.19);
+$color-green: #68c967;
+$color-red: red;
+
+// Font variables
+$font-nunito: "Nunito", sans-serif;
+$font-primary-size: 0.8rem;
+$font-header-size: 1.3rem;
+$font-icon-size: 1.5rem;
+$font-meta-size: 1rem;
+
+// Border variables
+$border-dynamic: 1px solid $color-white;
+$border-radius: 7.5px;
 
 // Global styles
 .d-none {
@@ -8,7 +26,7 @@ $nunito: "Nunito", sans-serif;
 }
 
 html {
-  color: #53a1b3;
+  color: $color-main;
   color-scheme: dark;
 }
 
@@ -20,9 +38,7 @@ body {
   margin: 0 auto;
   padding: 1.5rem;
   position: relative;
-  //width: 22.5rem;
-  //font-family: Open Sans, Segoe UI, Helvetica Neue, Ubuntu, sans-serif;
-  font-size: 0.8rem;
+  font-size: $font-primary-size;
 }
 
 // Block: container
@@ -33,11 +49,11 @@ body {
 
 // Block: header
 .header {
-  display: flex;
+  @extend .container; // If header shares the same display and flex-direction
   align-items: center;
   justify-content: center;
   text-transform: capitalize;
-  font-size: 1.3rem;
+  font-size: $font-header-size;
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -63,7 +79,7 @@ body {
 // Block: btn
 .btn {
   &--track {
-    color: black;
+    color: $color-black;
     margin-top: 20px;
     margin-bottom: 40px;
   }
@@ -72,24 +88,24 @@ body {
 // Block: list
 .list {
   &__item {
-    color: white;
+    color: $color-white;
     margin-top: 40px;
     margin-bottom: 40px;
-    border-radius: 7.5px;
+    border-radius: $border-radius;
     transition: all 0.45s ease-in-out;
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 9px 30px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 6px 12px 0 $color-shadow, 0 9px 30px 0 $color-shadow-deep;
   }
   &__icon {
-    color: #68c967 !important;
-    font-size: 1.5rem;
+    color: $color-green !important;
+    font-size: $font-icon-size;
   }
   &__meta-title {
-    color: #68c967 !important;
-    font-size: 1rem;
+    color: $color-green !important;
+    font-size: $font-meta-size;
   }
   &__meta-description {
-    color: white !important;
-    font-size: 0.8rem;
+    color: $color-white !important;
+    font-size: $font-primary-size;
   }
 }
 
@@ -102,18 +118,18 @@ body {
 
 // Modifiers
 .text--white {
-  color: #fff;
+  color: $color-white;
 }
 
 .border {
   &--dynamic {
-    border: 1px solid white;
+    border: $border-dynamic;
   }
   &--red {
-    border-color: red;
+    border-color: $color-red;
   }
   &--green {
-    border-color: green;
+    border-color: $color-green;
   }
 }
 
@@ -123,4 +139,9 @@ body {
   height: 16px;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+// Set font family globally if desired
+* {
+  font-family: $font-nunito;
 }
