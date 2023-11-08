@@ -1,9 +1,18 @@
 const getWebsiteContent = async (url: string): Promise<string> => {
   try {
     const response = await fetch(url, {
-      mode: 'no-cors',
+      // mode: 'no-cors', ToDo: during testing found that with no-cors it get's content actually
     });
     const htmlContent = await response.text();
+
+    console.log('HTML-CONTENT', htmlContent);
+
+    if (!htmlContent) {
+      console.log('No content found');
+      return '';
+    }
+    //
+    // alert('NEW' + htmlContent);
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, 'text/html');

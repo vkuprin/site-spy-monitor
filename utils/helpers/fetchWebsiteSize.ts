@@ -1,8 +1,6 @@
 const fetchWebsiteSize = async (url: string): Promise<number> => {
   try {
-    const response = await fetch(url, {
-      mode: 'no-cors',
-    });
+    const response = await fetch(url);
     const content = await response.text();
     return new Blob([content]).size;
   } catch (error) {
