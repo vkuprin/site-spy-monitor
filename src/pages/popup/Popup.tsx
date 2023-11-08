@@ -22,7 +22,6 @@ const Popup = (): ReactElement => {
   const [urlPrefix, setUrlPrefix] = useState<string>('https://');
   const [intervalTime, setIntervalTime] = useState<number>(30);
   const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
-
   useEffect(() => {
     const loadWebsites = async () => {
       const websites = await trackedWebsitesStorage.getAllUrls();

@@ -13,13 +13,6 @@ const doesWebsiteExist = async (url: string): Promise<boolean> => {
     console.log('Response status:', response.status);
     return response.ok || (response.status >= 400 && response.status < 500);
   } catch (error) {
-    console.error('Error while fetching:', error);
-
-    // Checking for network errors that could imply the site exists
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      console.log('Assuming the site exists because the request was blocked or failed.');
-      return true;
-    }
     return false;
   }
 };
