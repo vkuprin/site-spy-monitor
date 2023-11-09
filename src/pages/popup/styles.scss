@@ -9,6 +9,15 @@ $color-shadow-deep: rgba(0, 0, 0, 0.19);
 $color-green: #68c967;
 $color-red: red;
 
+// Color variables - light
+$color-main-light: #b3d4db;
+$color-black-light: #333;
+$color-white-light: #fff;
+$color-shadow-light: rgba(0, 0, 0, 0.1);
+$color-shadow-deep-light: rgba(0, 0, 0, 0.05);
+$color-green-light: #76d77a;
+$color-red-light: #ff6666;
+
 // Font variables
 $font-nunito: "Nunito", sans-serif;
 $font-primary-size: 0.8rem;
@@ -51,11 +60,12 @@ body {
 .header {
   @extend .container; // If header shares the same display and flex-direction
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   text-transform: capitalize;
   font-size: $font-header-size;
   font-weight: 600;
   margin-bottom: 1rem;
+  user-select: none;
 }
 
 // Block: container-selector

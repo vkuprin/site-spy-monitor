@@ -3,7 +3,7 @@ import { Button, Input, List, notification, Select, ConfigProvider, theme, Popco
 import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, EyeFilled } from '@ant-design/icons';
 
 import './styles.scss';
 
@@ -22,6 +22,8 @@ const Popup = (): ReactElement => {
   const [urlPrefix, setUrlPrefix] = useState<string>('https://');
   const [intervalTime, setIntervalTime] = useState<number>(30);
   const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
+  const [themeMode, setThemeMode] = useState<'dark' | 'light'>('dark');
+
   useEffect(() => {
     const loadWebsites = async () => {
       const websites = await trackedWebsitesStorage.getAllUrls();
@@ -29,6 +31,12 @@ const Popup = (): ReactElement => {
     };
     loadWebsites();
   }, []);
+
+  const toggleTheme = () => {
+    const html = document.querySelector('html');
+    html.style.setProperty('color-scheme', themeMode === 'dark' ? 'light' : 'dark');
+    setThemeMode(prevTheme => (prevTheme === 'dark' ? 'light' : 'dark'));
+  };
 
   const addToTrackedWebsites = async (websiteUrl: string) => {
     setLoading(true);
@@ -168,11 +176,13 @@ const Popup = (): ReactElement => {
   return (
     <ConfigProvider
       theme={{
-        algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
+        algorithm: [themeMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm, theme.compactAlgorithm],
       }}>
       <div className="container">
         <header className="header">
-          <h1>Site Spy</h1>
+          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
+          <EyeFilled onClick={toggleTheme} />
+          <h1 style={{ cursor: 'pointer' }}>Site Spy</h1>
         </header>
         <div className="container-selector">
           <h1 className="container-selector__title">Enter full website URL to track:</h1>
@@ -215,7 +225,13 @@ const Popup = (): ReactElement => {
           onConfirm={handleConfirm}
           okButtonProps={{ loading: confirmLoading }}
           onCancel={handleCancel}>
-          <Button className="btn--track text--white" onClick={handleStartTracking} loading={loading}>
+          <Button
+            className="btn--track text--white"
+            onClick={handleStartTracking}
+            loading={loading}
+            style={{
+              color: themeMode === 'dark' ? '#fff' : '#000',
+            }}>
             Start Tracking
           </Button>
         </Popconfirm>
