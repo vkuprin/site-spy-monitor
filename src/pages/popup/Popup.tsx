@@ -13,6 +13,10 @@ import truncate from '@root/utils/helpers/truncate';
 import * as diff from 'diff';
 import fetchWebsiteSize from '@root/utils/helpers/fetchWebsiteSize';
 
+const getDefaultThemeState = async () => {
+  return await chrome.storage.local.get('themeMode');
+};
+
 const Popup = (): ReactElement => {
   const [websiteDiffs, setWebsiteDiffs] = useState<Record<string, diff.Change[]>>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,10 +36,21 @@ const Popup = (): ReactElement => {
     loadWebsites();
   }, []);
 
+  useEffect(() => {
+    const loadTheme = async () => {
+      const { themeMode } = await getDefaultThemeState();
+      setThemeMode(themeMode);
+      const html = document.querySelector('html');
+      html.style.setProperty('color-scheme', themeMode);
+    };
+    loadTheme();
+  }, []);
+
   const toggleTheme = () => {
     const html = document.querySelector('html');
     html.style.setProperty('color-scheme', themeMode === 'dark' ? 'light' : 'dark');
     setThemeMode(prevTheme => (prevTheme === 'dark' ? 'light' : 'dark'));
+    chrome.storage.local.set({ themeMode: themeMode === 'dark' ? 'light' : 'dark' });
   };
 
   const addToTrackedWebsites = async (websiteUrl: string) => {
@@ -267,15 +282,15 @@ const Popup = (): ReactElement => {
                 {websiteDiffs[website]?.map((change, index) => {
                   if (change.added) {
                     return (
-                      <span key={index} style={{ backgroundColor: 'green' }}>
+                      <div key={index} style={{ backgroundColor: 'green' }}>
                         {change.value}
-                      </span>
+                      </div>
                     );
                   } else if (change.removed) {
                     return (
-                      <span key={index} style={{ backgroundColor: 'red' }}>
+                      <div key={index} style={{ backgroundColor: 'red' }}>
                         {change.value}
-                      </span>
+                      </div>
                     );
                   }
                   return null;
