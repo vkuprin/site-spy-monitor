@@ -34,6 +34,11 @@ $border-radius: 7.5px;
   display: none !important;
 }
 
+:root {
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+
 html {
   color: $color-main;
   color-scheme: dark;

@@ -244,9 +244,7 @@ const Popup = (): ReactElement => {
             className="btn--track text--white"
             onClick={handleStartTracking}
             loading={loading}
-            style={{
-              color: themeMode === 'dark' ? '#fff' : '#000',
-            }}>
+            style={{ color: themeMode === 'dark' ? '#fff' : '#000' }}>
             Start Tracking
           </Button>
         </Popconfirm>
