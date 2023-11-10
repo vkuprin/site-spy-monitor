@@ -41,6 +41,15 @@ const Popup = (): ReactElement => {
   const [intervalTime, setIntervalTime] = useState<number>(30);
   const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
   const [themeMode, setThemeMode] = useState<'dark' | 'light'>('dark');
+  const [buttonText, setButtonText] = useState<string>('Track Current Website');
+
+  useEffect(() => {
+    if (url) {
+      setButtonText('Start Tracking Entered Website');
+    } else {
+      setButtonText('Track Current Website');
+    }
+  }, [url]);
 
   useEffect(() => {
     const loadWebsites = async () => {
@@ -106,6 +115,11 @@ const Popup = (): ReactElement => {
   };
 
   const handleStartTracking = async () => {
+    if (!url) {
+      await trackCurrentWebsite();
+      return;
+    }
+
     if (url && intervalTime) {
       const exists = await doesWebsiteExist(urlPrefix + url);
 
@@ -186,6 +200,19 @@ const Popup = (): ReactElement => {
     </Select>
   );
 
+  const trackCurrentWebsite = async () => {
+    try {
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        const activeTab = tabs[0];
+        if (activeTab && activeTab.url) {
+          addToTrackedWebsites(activeTab.url); // existing function to add the website
+        }
+      });
+    } catch (error) {
+      console.error('Error tracking current website:', error);
+    }
+  };
+
   const handleIntervalChange = (value: number) => {
     setIntervalTime(value);
     chrome.storage.local.set({ intervalTime: value });
@@ -259,7 +286,7 @@ const Popup = (): ReactElement => {
             onClick={handleStartTracking}
             loading={loading}
             style={{ color: themeMode === 'dark' ? '#fff' : '#000' }}>
-            Start Tracking
+            {buttonText}
           </Button>
         </Popconfirm>
         <List
