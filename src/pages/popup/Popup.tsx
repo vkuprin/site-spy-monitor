@@ -17,7 +17,7 @@ import {
 import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
-import { CloseOutlined, EyeFilled, PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { CloseOutlined, EyeFilled, PlusCircleOutlined, MinusCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 
 import './styles.scss';
 
@@ -26,6 +26,7 @@ import doesWebsiteExist from '@root/utils/helpers/doesWebsiteExist';
 import truncate from '@root/utils/helpers/truncate';
 import * as diff from 'diff';
 import fetchWebsiteSize from '@root/utils/helpers/fetchWebsiteSize';
+import removePrefix from '@root/utils/helpers/removePrefix';
 
 const getDefaultThemeState = async () => {
   return await chrome.storage.local.get('themeMode');
@@ -205,7 +206,7 @@ const Popup = (): ReactElement => {
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         const activeTab = tabs[0];
         if (activeTab && activeTab.url) {
-          addToTrackedWebsites(activeTab.url); // existing function to add the website
+          addToTrackedWebsites(activeTab.url);
         }
       });
     } catch (error) {
@@ -314,8 +315,11 @@ const Popup = (): ReactElement => {
                       justifyContent: 'space-between',
                     }}>
                     <img className="favicon" src={`${website}/favicon.ico`} alt="" />
-                    {truncate(website, 20)}
-                    <CloseOutlined onClick={() => handleRemoveWebsite(website)} />
+                    {truncate(removePrefix(website), 20)}
+                    <div style={{ gap: '10px', display: 'flex' }}>
+                      <ReloadOutlined onClick={() => checkWebsiteChanges(website)} />
+                      <CloseOutlined onClick={() => handleRemoveWebsite(website)} />
+                    </div>
                   </span>
                 }>
                 <Collapse>
