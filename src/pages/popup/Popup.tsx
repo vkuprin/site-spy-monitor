@@ -1,9 +1,23 @@
 import React, { useState, useEffect, ReactElement } from 'react';
-import { Button, Input, List, notification, Select, ConfigProvider, theme, Popconfirm, Card, Spin, Empty } from 'antd';
+import {
+  Button,
+  Input,
+  List,
+  notification,
+  Select,
+  ConfigProvider,
+  theme,
+  Popconfirm,
+  Card,
+  Spin,
+  Empty,
+  Collapse,
+  Tooltip,
+} from 'antd';
 import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
-import { CloseOutlined, EyeFilled } from '@ant-design/icons';
+import { CloseOutlined, EyeFilled, PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 
 import './styles.scss';
 
@@ -277,22 +291,32 @@ const Popup = (): ReactElement => {
                     <CloseOutlined onClick={() => handleRemoveWebsite(website)} />
                   </span>
                 }>
-                {websiteDiffs[website]?.map((change, index) => {
-                  if (change.added) {
-                    return (
-                      <div key={index} style={{ backgroundColor: 'green' }}>
-                        {change.value}
-                      </div>
-                    );
-                  } else if (change.removed) {
-                    return (
-                      <div key={index} style={{ backgroundColor: 'red' }}>
-                        {change.value}
-                      </div>
-                    );
-                  }
-                  return null;
-                })}
+                <Collapse>
+                  <>
+                    {websiteDiffs[website]?.map((change, index) => {
+                      return (
+                        <div key={index}>
+                          {change.added && (
+                            <>
+                              <Tooltip title="Added content">
+                                <PlusCircleOutlined style={{ color: 'lightgreen' }} />
+                              </Tooltip>
+                              <span style={{ backgroundColor: 'green' }}>{change.value}</span>
+                            </>
+                          )}
+                          {change.removed && (
+                            <>
+                              <Tooltip title="Removed content">
+                                <MinusCircleOutlined style={{ color: 'lightcoral' }} />
+                              </Tooltip>
+                              <span style={{ backgroundColor: 'red' }}>{change.value}</span>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </>
+                </Collapse>
               </Card>
             </List.Item>
           )}
