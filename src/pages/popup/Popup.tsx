@@ -28,9 +28,9 @@ import * as diff from 'diff';
 import fetchWebsiteSize from '@root/utils/helpers/fetchWebsiteSize';
 import removePrefix from '@root/utils/helpers/removePrefix';
 
-const getDefaultThemeState = async () => {
-  return await chrome.storage.local.get('themeMode');
-};
+// const getDefaultThemeState = async () => {
+//   return await chrome.storage.local.get('themeMode');
+// };
 
 const Popup = (): ReactElement => {
   const [websiteDiffs, setWebsiteDiffs] = useState<Record<string, diff.Change[]>>({});
@@ -41,7 +41,7 @@ const Popup = (): ReactElement => {
   const [urlPrefix, setUrlPrefix] = useState<string>('https://');
   const [intervalTime, setIntervalTime] = useState<number>(30);
   const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
-  const [themeMode, setThemeMode] = useState<'dark' | 'light'>('dark');
+  // const [themeMode, setThemeMode] = useState<'dark' | 'light'>('dark');
   const [buttonText, setButtonText] = useState<string>('Track Current Website');
 
   useEffect(() => {
@@ -60,28 +60,28 @@ const Popup = (): ReactElement => {
     loadWebsites();
   }, []);
 
-  useEffect(() => {
-    const loadTheme = async () => {
-      const { themeMode } = await getDefaultThemeState();
-      setThemeMode(themeMode);
-      const html = document.querySelector('html');
-      html.style.setProperty('color-scheme', themeMode);
-    };
-    loadTheme();
-  }, []);
-
-  const toggleTheme = () => {
-    const html = document.querySelector('html');
-    html.style.setProperty('color-scheme', themeMode === 'dark' ? 'light' : 'dark');
-    setThemeMode(prevTheme => (prevTheme === 'dark' ? 'light' : 'dark'));
-    chrome.storage.local.set({ themeMode: themeMode === 'dark' ? 'light' : 'dark' });
-  };
+  // useEffect(() => {
+  //   const loadTheme = async () => {
+  //     const { themeMode } = await getDefaultThemeState();
+  //     setThemeMode(themeMode);
+  //     const html = document.querySelector('html');
+  //     html.style.setProperty('color-scheme', themeMode);
+  //   };
+  //   loadTheme();
+  // }, []);
+  //
+  // const toggleTheme = () => {
+  //   const html = document.querySelector('html');
+  //   html.style.setProperty('color-scheme', themeMode === 'dark' ? 'light' : 'dark');
+  //   setThemeMode(prevTheme => (prevTheme === 'dark' ? 'light' : 'dark'));
+  //   chrome.storage.local.set({ themeMode: themeMode === 'dark' ? 'light' : 'dark' });
+  // };
 
   const addToTrackedWebsites = async (websiteUrl: string) => {
     setLoading(true);
     const newWebsite = {
       url: websiteUrl,
-      content: '', // will be replaced shortly after
+      content: '',
     };
     await trackedWebsitesStorage.addWebsite(newWebsite);
     await trackedWebsitesStorage.saveContent(websiteUrl); // fetch and save the current content
@@ -125,10 +125,10 @@ const Popup = (): ReactElement => {
       const exists = await doesWebsiteExist(urlPrefix + url);
 
       if (!exists) {
-        showPopconfirm(); // Show the Popconfirm if the website doesn't exist
+        showPopconfirm();
       } else {
         await checkSize();
-        await addToTrackedWebsites(urlPrefix + url); // Directly add the website if it exists
+        await addToTrackedWebsites(urlPrefix + url);
       }
     }
   };
@@ -178,7 +178,7 @@ const Popup = (): ReactElement => {
       addToTrackedWebsites(urlPrefix + url);
       setOpen(false);
       setConfirmLoading(false);
-    }, 2000); // Here, we're simulating an async operation with a timeout of 2 seconds
+    }, 2000);
   };
 
   const handleCancel = () => {
@@ -219,7 +219,6 @@ const Popup = (): ReactElement => {
     chrome.storage.local.set({ intervalTime: value });
   };
 
-  // Effect to update the protocol dropdown and remove the protocol from the URL input
   useEffect(() => {
     const protocolPattern = /^(http:\/\/|https:\/\/)/;
     const match = url.match(protocolPattern);
@@ -230,6 +229,8 @@ const Popup = (): ReactElement => {
     }
   }, [url]);
 
+  const themeMode = 'dark';
+
   return (
     <ConfigProvider
       theme={{
@@ -238,7 +239,7 @@ const Popup = (): ReactElement => {
       <div className="container">
         <header className="header">
           {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
-          <EyeFilled onClick={toggleTheme} />
+          <EyeFilled />
           <h1 style={{ cursor: 'pointer' }}>Site Spy</h1>
         </header>
         <div className="container-selector">
@@ -253,8 +254,8 @@ const Popup = (): ReactElement => {
                 const match = inputVal.match(protocolPattern);
 
                 if (match) {
-                  setUrlPrefix(match[0]); // Set the dropdown to the matched protocol
-                  setUrl(inputVal.replace(protocolPattern, '')); // Remove the protocol from the URL
+                  setUrlPrefix(match[0]);
+                  setUrl(inputVal.replace(protocolPattern, ''));
                 } else {
                   setUrl(inputVal); // Set URL normally if no protocol match
                 }
@@ -270,10 +271,13 @@ const Popup = (): ReactElement => {
             placeholder="Interval"
             onChange={handleIntervalChange}
             value={intervalTime}>
-            <Select.Option value={30}>30s</Select.Option>
-            <Select.Option value={60}>1m</Select.Option>
-            <Select.Option value={120}>2m</Select.Option>
-            <Select.Option value={300}>5m</Select.Option>
+            <Select.Option value={30}>30 seconds</Select.Option>
+            <Select.Option value={60}>1 minute</Select.Option>
+            <Select.Option value={120}>2 minutes</Select.Option>
+            <Select.Option value={300}>5 minutes</Select.Option>
+            <Select.Option value={604800}>1 week</Select.Option>
+            <Select.Option value={1209600}>2 weeks</Select.Option>
+            <Select.Option value={2592000}>1 month</Select.Option>
           </Select>
         </div>
         <Popconfirm
@@ -316,7 +320,7 @@ const Popup = (): ReactElement => {
                     }}>
                     <img className="favicon" src={`${website}/favicon.ico`} alt="" />
                     {truncate(removePrefix(website), 20)}
-                    <div style={{ gap: '10px', display: 'flex' }}>
+                    <div className="list__item--icons">
                       <ReloadOutlined onClick={() => checkWebsiteChanges(website)} />
                       <CloseOutlined onClick={() => handleRemoveWebsite(website)} />
                     </div>

@@ -109,7 +109,20 @@ body {
     border-radius: $border-radius;
     transition: all 0.45s ease-in-out;
     box-shadow: 0 6px 12px 0 $color-shadow, 0 9px 30px 0 $color-shadow-deep;
+
+    &--icons {
+      gap: 10px;
+      display: flex;
+
+      svg {
+        &:hover {
+          cursor: pointer;
+          opacity: 0.6;
+        }
+      }
+    }
   }
+
   &__icon {
     color: $color-green !important;
     font-size: $font-icon-size;
