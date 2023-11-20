@@ -127,6 +127,15 @@ const Popup = (): ReactElement => {
       if (!exists) {
         showPopconfirm();
       } else {
+        const complex = await checkWebsiteComplexity(urlPrefix + url);
+        if (complex) {
+          notification.open({
+            message: 'Complex Website Detected',
+            description: `The website ${urlPrefix + url} appears to be too complex for effective tracking`,
+            placement: 'top',
+          });
+          return;
+        }
         await checkSize();
         await addToTrackedWebsites(urlPrefix + url);
       }
@@ -172,6 +181,36 @@ const Popup = (): ReactElement => {
     };
   }, [trackedWebsites, intervalTime]);
 
+  const checkWebsiteComplexity = async websiteUrl => {
+    try {
+      const response = await fetch(websiteUrl);
+      const html = await response.text();
+
+      // Check for common SPA root element IDs (not just 'root')
+      const spaIdentifiers = ['root', 'app', 'main'];
+      const isSPA = spaIdentifiers.some(id => html.includes(`<div id="${id}"></div>`));
+
+      // Check for elements or scripts that are typically used by SPAs
+      if (isSPA || html.includes('<script type="module"') || html.includes('</router-view>')) {
+        console.log('SPA website detected');
+        return true;
+      }
+
+      // Check for SSR-specific patterns, like server-rendered content markers
+      if (html.includes('data-server-rendered') || html.includes('__NEXT_DATA__')) {
+        console.log('SSR website detected');
+        return false;
+      }
+
+      // Fallback for unknown or more traditional websites
+      console.log('Traditional or undetermined website type');
+      return false;
+    } catch (error) {
+      console.error('Error checking website complexity:', error);
+      return 'Error';
+    }
+  };
+
   const handleConfirm = () => {
     setConfirmLoading(true);
     setTimeout(() => {
@@ -203,10 +242,21 @@ const Popup = (): ReactElement => {
 
   const trackCurrentWebsite = async () => {
     try {
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.query({ active: true, currentWindow: true }, async function (tabs) {
         const activeTab = tabs[0];
+        const complex = await checkWebsiteComplexity(activeTab.url);
+
+        if (complex) {
+          notification.open({
+            message: 'Complex Website Detected',
+            description: `The website ${activeTab.url} appears to be too complex for effective tracking`,
+            placement: 'top',
+          });
+          return;
+        }
+
         if (activeTab && activeTab.url) {
-          addToTrackedWebsites(activeTab.url);
+          await addToTrackedWebsites(activeTab.url);
         }
       });
     } catch (error) {
