@@ -23,7 +23,7 @@
     "lint": "eslint src --ext .ts",
     "lint:fix": "pnpm lint -- --fix",
     "prettier": "prettier . --write",
-    "zip": "zip -r builds/vee-tracker.zip dist"
+    "zip": "zip -r dist/vee-tracker.zip dist"
   },
   "type": "module",
   "dependencies": {
