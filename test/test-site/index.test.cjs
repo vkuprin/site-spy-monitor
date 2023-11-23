@@ -6,7 +6,11 @@ const PORT = 3000;
 const requestHandler = (request, response) => {
   response.statusCode = 200;
   response.setHeader('Content-Type', 'text/plain');
-  response.end('Hello Ofelia Lane, How is is going \n');
+  response.end(`
+  Hello Mom! World
+  I'm a test site. I'm running on ${HOSTNAME}:${PORT}
+  New content here
+  `);
 };
 
 const server = http.createServer(requestHandler);
