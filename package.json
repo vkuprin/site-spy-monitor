@@ -28,6 +28,7 @@
   "type": "module",
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
+    "@sentry/react": "^7.81.1",
     "antd": "^5.11.3",
     "construct-style-sheets-polyfill": "^3.1.0",
     "diff": "^5.1.0",
