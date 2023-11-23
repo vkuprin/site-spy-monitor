@@ -28,11 +28,6 @@ import removePrefix from '@root/utils/helpers/removePrefix';
 import useTrackedWebsites from '@src/hooks/useTrackedWebsites';
 import useWebsiteDiff from '@src/hooks/useWebsiteDiff';
 
-interface UrlInputProps {
-  url: string;
-  setUrlPrefix: (value: string) => void;
-  setUrl: (value: string) => void;
-}
 const themeMode = 'dark';
 const URL_PREFIX_OPTIONS = ['https://', 'http://'];
 const spaIdentifiers = ['root', 'app', 'main'];
@@ -52,6 +47,12 @@ const Header = () => (
     <h1 style={{ cursor: 'pointer' }}>Site Spy</h1>
   </header>
 );
+
+interface UrlInputProps {
+  url: string;
+  setUrlPrefix: (value: string) => void;
+  setUrl: (value: string) => void;
+}
 
 const URLInput = ({ url, setUrlPrefix, setUrl }: UrlInputProps) => {
   const selectBefore = (
