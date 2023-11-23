@@ -21,28 +21,24 @@ import { CloseOutlined, EyeFilled, PlusCircleOutlined, MinusCircleOutlined, Relo
 
 import './styles.scss';
 
-import trackedWebsitesStorage from '@src/shared/storages/trackedWebsitesStorage';
 import doesWebsiteExist from '@root/utils/helpers/doesWebsiteExist';
 import truncate from '@root/utils/helpers/truncate';
-import * as diff from 'diff';
 import fetchWebsiteSize from '@root/utils/helpers/fetchWebsiteSize';
 import removePrefix from '@root/utils/helpers/removePrefix';
-
-// const getDefaultThemeState = async () => {
-//   return await chrome.storage.local.get('themeMode');
-// };
+import useTrackedWebsites from '@src/hooks/useTrackedWebsites';
+import useWebsiteDiff from '@src/hooks/useWebsiteDiff';
 
 const Popup = (): ReactElement => {
-  const [websiteDiffs, setWebsiteDiffs] = useState<Record<string, diff.Change[]>>({});
-  const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
   const [url, setUrl] = useState<string>('');
   const [urlPrefix, setUrlPrefix] = useState<string>('https://');
   const [intervalTime, setIntervalTime] = useState<number>(30);
-  const [trackedWebsites, setTrackedWebsites] = useState<string[]>([]);
-  // const [themeMode, setThemeMode] = useState<'dark' | 'light'>('dark');
   const [buttonText, setButtonText] = useState<string>('Track Current Website');
+
+  const { websiteDiffs, checkWebsiteChanges, loadingDiff } = useWebsiteDiff();
+
+  const { trackedWebsites, addTrackedWebsite, removeTrackedWebsite, loadingTrackedWebsites } = useTrackedWebsites();
 
   useEffect(() => {
     if (url) {
@@ -51,44 +47,6 @@ const Popup = (): ReactElement => {
       setButtonText('Track Current Website');
     }
   }, [url]);
-
-  useEffect(() => {
-    const loadWebsites = async () => {
-      const websites = await trackedWebsitesStorage.getAllUrls();
-      setTrackedWebsites(websites);
-    };
-    loadWebsites();
-  }, []);
-
-  // useEffect(() => {
-  //   const loadTheme = async () => {
-  //     const { themeMode } = await getDefaultThemeState();
-  //     setThemeMode(themeMode);
-  //     const html = document.querySelector('html');
-  //     html.style.setProperty('color-scheme', themeMode);
-  //   };
-  //   loadTheme();
-  // }, []);
-  //
-  // const toggleTheme = () => {
-  //   const html = document.querySelector('html');
-  //   html.style.setProperty('color-scheme', themeMode === 'dark' ? 'light' : 'dark');
-  //   setThemeMode(prevTheme => (prevTheme === 'dark' ? 'light' : 'dark'));
-  //   chrome.storage.local.set({ themeMode: themeMode === 'dark' ? 'light' : 'dark' });
-  // };
-
-  const addToTrackedWebsites = async (websiteUrl: string) => {
-    setLoading(true);
-    const newWebsite = {
-      url: websiteUrl,
-      content: '',
-    };
-    await trackedWebsitesStorage.addWebsite(newWebsite);
-    await trackedWebsitesStorage.saveContent(websiteUrl); // fetch and save the current content
-    setTrackedWebsites(prev => [...prev, websiteUrl]);
-    setUrl('');
-    setLoading(false);
-  };
 
   const checkSize = async () => {
     const size = await fetchWebsiteSize(urlPrefix + url);
@@ -137,34 +95,13 @@ const Popup = (): ReactElement => {
           return;
         }
         await checkSize();
-        await addToTrackedWebsites(urlPrefix + url);
+        await addTrackedWebsite(urlPrefix + url);
       }
     }
   };
 
   const showPopconfirm = () => {
     setOpen(true);
-  };
-
-  const checkWebsiteChanges = async (url: string): Promise<void> => {
-    setLoading(true);
-    const isSameVersion = await trackedWebsitesStorage.isVersionSame(url);
-    if (!isSameVersion) {
-      const changes = await trackedWebsitesStorage.saveContent(url);
-      setWebsiteDiffs(prev => ({ ...prev, [url]: changes }));
-
-      notification.open({
-        message: 'Website Updated',
-        description: `The website ${url} has been updated.`,
-        placement: 'bottomRight',
-      });
-    }
-    setLoading(false);
-  };
-
-  const handleRemoveWebsite = async (websiteUrl: string) => {
-    await trackedWebsitesStorage.removeWebsite(websiteUrl);
-    setTrackedWebsites(prev => prev.filter(w => w !== websiteUrl));
   };
 
   useEffect(() => {
@@ -214,7 +151,7 @@ const Popup = (): ReactElement => {
   const handleConfirm = () => {
     setConfirmLoading(true);
     setTimeout(() => {
-      addToTrackedWebsites(urlPrefix + url);
+      addTrackedWebsite(urlPrefix + url);
       setOpen(false);
       setConfirmLoading(false);
     }, 2000);
@@ -256,7 +193,7 @@ const Popup = (): ReactElement => {
         }
 
         if (activeTab && activeTab.url) {
-          await addToTrackedWebsites(activeTab.url);
+          await addTrackedWebsite(activeTab.url);
         }
       });
     } catch (error) {
@@ -339,7 +276,7 @@ const Popup = (): ReactElement => {
           <Button
             className="btn--track text--white"
             onClick={handleStartTracking}
-            loading={loading}
+            loading={loadingDiff || loadingTrackedWebsites}
             style={{ color: themeMode === 'dark' ? '#fff' : '#000' }}>
             {buttonText}
           </Button>
@@ -372,7 +309,7 @@ const Popup = (): ReactElement => {
                     {truncate(removePrefix(website), 20)}
                     <div className="list__item--icons">
                       <ReloadOutlined onClick={() => checkWebsiteChanges(website)} />
-                      <CloseOutlined onClick={() => handleRemoveWebsite(website)} />
+                      <CloseOutlined onClick={() => removeTrackedWebsite(website)} />
                     </div>
                   </span>
                 }>
