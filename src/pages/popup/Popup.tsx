@@ -33,7 +33,7 @@ interface UrlInputProps {
   setUrlPrefix: (value: string) => void;
   setUrl: (value: string) => void;
 }
-
+const themeMode = 'dark';
 const URL_PREFIX_OPTIONS = ['https://', 'http://'];
 const spaIdentifiers = ['root', 'app', 'main'];
 const INTERVAL_OPTIONS = [
@@ -162,7 +162,7 @@ const Popup = (): ReactElement => {
         clearInterval(interval);
       });
     };
-  }, [trackedWebsites, intervalTime]);
+  }, [trackedWebsites, intervalTime, checkWebsiteChanges]);
 
   const checkWebsiteComplexity = async websiteUrl => {
     try {
@@ -241,8 +241,6 @@ const Popup = (): ReactElement => {
       setUrl(url.replace(protocolPattern, '')); // Remove the protocol from the URL
     }
   }, [url]);
-
-  const themeMode = 'dark';
 
   return (
     <ConfigProvider
