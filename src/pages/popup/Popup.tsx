@@ -27,19 +27,7 @@ import fetchWebsiteSize from '@root/utils/helpers/fetchWebsiteSize';
 import removePrefix from '@root/utils/helpers/removePrefix';
 import useTrackedWebsites from '@src/hooks/useTrackedWebsites';
 import useWebsiteDiff from '@src/hooks/useWebsiteDiff';
-
-const themeMode = 'dark';
-const URL_PREFIX_OPTIONS = ['https://', 'http://'];
-const spaIdentifiers = ['root', 'app', 'main'];
-const INTERVAL_OPTIONS = [
-  { label: '30 seconds', value: 30 },
-  { label: '1 minute', value: 60 },
-  { label: '2 minutes', value: 120 },
-  { label: '5 minutes', value: 300 },
-  { label: '1 week', value: 604800 },
-  { label: '2 weeks', value: 1209600 },
-  { label: '1 month', value: 2592000 },
-];
+import { INTERVAL_OPTIONS, spaIdentifiers, themeMode, URL_PREFIX_OPTIONS } from '@src/constants/global';
 
 const Header = () => (
   <header className="header">
