@@ -28,6 +28,52 @@ import removePrefix from '@root/utils/helpers/removePrefix';
 import useTrackedWebsites from '@src/hooks/useTrackedWebsites';
 import useWebsiteDiff from '@src/hooks/useWebsiteDiff';
 
+interface UrlInputProps {
+  url: string;
+  setUrlPrefix: (value: string) => void;
+  setUrl: (value: string) => void;
+}
+
+const URL_PREFIX_OPTIONS = ['https://', 'http://'];
+const spaIdentifiers = ['root', 'app', 'main'];
+const INTERVAL_OPTIONS = [
+  { label: '30 seconds', value: 30 },
+  { label: '1 minute', value: 60 },
+  { label: '2 minutes', value: 120 },
+  { label: '5 minutes', value: 300 },
+  { label: '1 week', value: 604800 },
+  { label: '2 weeks', value: 1209600 },
+  { label: '1 month', value: 2592000 },
+];
+
+const Header = () => (
+  <header className="header">
+    <EyeFilled />
+    <h1 style={{ cursor: 'pointer' }}>Site Spy</h1>
+  </header>
+);
+
+const URLInput = ({ url, setUrlPrefix, setUrl }: UrlInputProps) => {
+  const selectBefore = (
+    <Select defaultValue="https://" style={{ width: 75, textAlign: 'center' }} onChange={setUrlPrefix}>
+      {URL_PREFIX_OPTIONS.map(option => (
+        <Select.Option key={option} value={option}>
+          {option}
+        </Select.Option>
+      ))}
+    </Select>
+  );
+
+  return (
+    <Input
+      addonBefore={selectBefore}
+      value={url}
+      onChange={e => setUrl(e.target.value)}
+      placeholder="Enter website URL to monitor"
+    />
+  );
+};
+
 const Popup = (): ReactElement => {
   const [open, setOpen] = useState<boolean>(false);
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
@@ -124,7 +170,6 @@ const Popup = (): ReactElement => {
       const html = await response.text();
 
       // Check for common SPA root element IDs (not just 'root')
-      const spaIdentifiers = ['root', 'app', 'main'];
       const isSPA = spaIdentifiers.some(id => html.includes(`<div id="${id}"></div>`));
 
       if (isSPA || html.includes('<script type="module"') || html.includes('</router-view>')) {
@@ -157,22 +202,6 @@ const Popup = (): ReactElement => {
   const handleCancel = () => {
     setOpen(false);
   };
-
-  const { Option } = Select;
-
-  const selectBefore = (
-    <Select
-      value={urlPrefix}
-      defaultValue="https://"
-      onChange={value => setUrlPrefix(value)}
-      style={{
-        width: 75,
-        textAlign: 'center',
-      }}>
-      <Option value="https://">https://</Option>
-      <Option value="http://">http://</Option>
-    </Select>
-  );
 
   const trackCurrentWebsite = async () => {
     try {
@@ -221,31 +250,11 @@ const Popup = (): ReactElement => {
         algorithm: [themeMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm, theme.compactAlgorithm],
       }}>
       <div className="container">
-        <header className="header">
-          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
-          <EyeFilled />
-          <h1 style={{ cursor: 'pointer' }}>Site Spy</h1>
-        </header>
+        <Header />
         <div className="container-selector">
           <h1 className="container-selector__title">Enter full website URL to track:</h1>
           <div className="btn-container">
-            <Input
-              addonBefore={selectBefore}
-              value={url}
-              onChange={e => {
-                const inputVal = e.target.value;
-                const protocolPattern = /^(http:\/\/|https:\/\/)/;
-                const match = inputVal.match(protocolPattern);
-
-                if (match) {
-                  setUrlPrefix(match[0]);
-                  setUrl(inputVal.replace(protocolPattern, ''));
-                } else {
-                  setUrl(inputVal); // Set URL normally if no protocol match
-                }
-              }}
-              placeholder="Enter website URL to monitor"
-            />
+            <URLInput url={url} setUrlPrefix={setUrlPrefix} setUrl={setUrl} />
           </div>
         </div>
         <div className="container-selector">
@@ -255,13 +264,11 @@ const Popup = (): ReactElement => {
             placeholder="Interval"
             onChange={handleIntervalChange}
             value={intervalTime}>
-            <Select.Option value={30}>30 seconds</Select.Option>
-            <Select.Option value={60}>1 minute</Select.Option>
-            <Select.Option value={120}>2 minutes</Select.Option>
-            <Select.Option value={300}>5 minutes</Select.Option>
-            <Select.Option value={604800}>1 week</Select.Option>
-            <Select.Option value={1209600}>2 weeks</Select.Option>
-            <Select.Option value={2592000}>1 month</Select.Option>
+            {INTERVAL_OPTIONS.map(option => (
+              <Select.Option key={option.value} value={option.value}>
+                {option.label}
+              </Select.Option>
+            ))}
           </Select>
         </div>
         <Popconfirm
