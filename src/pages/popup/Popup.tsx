@@ -127,19 +127,16 @@ const Popup = (): ReactElement => {
       const spaIdentifiers = ['root', 'app', 'main'];
       const isSPA = spaIdentifiers.some(id => html.includes(`<div id="${id}"></div>`));
 
-      // Check for elements or scripts that are typically used by SPAs
       if (isSPA || html.includes('<script type="module"') || html.includes('</router-view>')) {
         console.log('SPA website detected');
         return true;
       }
 
-      // Check for SSR-specific patterns, like server-rendered content markers
       if (html.includes('data-server-rendered') || html.includes('__NEXT_DATA__')) {
         console.log('SSR website detected');
         return false;
       }
 
-      // Fallback for unknown or more traditional websites
       console.log('Traditional or undetermined website type');
       return false;
     } catch (error) {

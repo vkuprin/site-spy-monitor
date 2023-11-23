@@ -5,7 +5,6 @@ const useWebsiteDiff = () => {
   const [websiteDiffs, setWebsiteDiffs] = useState({});
   const [loadingDiff, setLoading] = useState(false);
 
-  // Function to check for changes in a specific website
   const checkWebsiteChanges = async (websiteUrl: string) => {
     setLoading(true);
     const isSameVersion = await trackedWebsitesStorage.isVersionSame(websiteUrl);
