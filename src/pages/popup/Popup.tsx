@@ -245,6 +245,14 @@ const Popup = (): ReactElement => {
     chrome.storage.local.set({ intervalTime: value });
   };
 
+  useEffect(() => {
+    chrome.storage.local.get(['intervalTime'], function (result) {
+      if (result.intervalTime) {
+        setIntervalTime(result.intervalTime);
+      }
+    });
+  }, []);
+
   return (
     <ConfigProvider
       theme={{
@@ -308,7 +316,12 @@ const Popup = (): ReactElement => {
                     <img className="favicon" src={`${website}/favicon.ico`} alt="" />
                     {truncate(removePrefix(website), 20)}
                     <div className="list__item--icons">
-                      <ReloadOutlined onClick={() => checkWebsiteChanges(website)} />
+                      <ReloadOutlined
+                        onClick={() => {
+                          setCountdown(intervalTime);
+                          return checkWebsiteChanges(website);
+                        }}
+                      />
                       <CloseOutlined onClick={() => removeTrackedWebsite(website)} />
                     </div>
                   </span>
