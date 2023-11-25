@@ -29,7 +29,7 @@ import useTrackedWebsites from '@src/hooks/useTrackedWebsites';
 import useWebsiteDiff from '@src/hooks/useWebsiteDiff';
 import { INTERVAL_OPTIONS, spaIdentifiers, themeMode, URL_PREFIX_OPTIONS } from '@src/constants/global';
 
-const Header = () => (
+const Header = (): ReactElement => (
   <header className="header">
     <EyeFilled />
     <h1 style={{ cursor: 'pointer' }}>Site Spy</h1>
@@ -42,7 +42,7 @@ interface UrlInputProps {
   setUrl: (value: string) => void;
 }
 
-const URLInput = ({ url, setUrlPrefix, setUrl }: UrlInputProps) => {
+const URLInput = ({ url, setUrlPrefix, setUrl }: UrlInputProps): ReactElement => {
   const selectBefore = (
     <Select defaultValue="https://" style={{ width: 75, textAlign: 'center' }} onChange={setUrlPrefix}>
       {URL_PREFIX_OPTIONS.map(option => (
@@ -70,6 +70,7 @@ const Popup = (): ReactElement => {
   const [urlPrefix, setUrlPrefix] = useState<string>('https://');
   const [intervalTime, setIntervalTime] = useState<number>(30);
   const [buttonText, setButtonText] = useState<string>('Track Current Website');
+  const [countdown, setCountdown] = useState<number>(intervalTime);
 
   const { websiteDiffs, checkWebsiteChanges, loadingDiff } = useWebsiteDiff();
 
@@ -82,6 +83,43 @@ const Popup = (): ReactElement => {
       setButtonText('Track Current Website');
     }
   }, [url]);
+
+  useEffect(() => {
+    const protocolPattern = /^(http:\/\/|https:\/\/)/;
+    const match = url.match(protocolPattern);
+
+    if (match) {
+      setUrlPrefix(match[0]); // Set the dropdown to the matched protocol
+      setUrl(url.replace(protocolPattern, '')); // Remove the protocol from the URL
+    }
+  }, [url]);
+
+  useEffect(() => {
+    if (trackedWebsites.length === 0) {
+      return;
+    }
+    setCountdown(intervalTime);
+  }, [intervalTime, trackedWebsites.length]);
+
+  useEffect(() => {
+    if (trackedWebsites.length > 0) {
+      const countdownInterval = setInterval(() => {
+        setCountdown(prevCountdown => (prevCountdown > 1 ? prevCountdown - 1 : intervalTime));
+      }, 1000);
+
+      return () => clearInterval(countdownInterval);
+    }
+  }, [trackedWebsites.length]);
+
+  useEffect(() => {
+    const intervals = trackedWebsites.map(website => {
+      return setInterval(async () => {
+        await checkWebsiteChanges(website);
+      }, intervalTime * 1000);
+    });
+
+    return () => intervals.forEach(interval => clearInterval(interval));
+  }, [trackedWebsites.length]); // ToDo: check dependency array properly
 
   const checkSize = async () => {
     const size = await fetchWebsiteSize(urlPrefix + url);
@@ -138,20 +176,6 @@ const Popup = (): ReactElement => {
   const showPopconfirm = () => {
     setOpen(true);
   };
-
-  useEffect(() => {
-    const intervals = trackedWebsites.map(website => {
-      return setInterval(async (): Promise<void> => {
-        await checkWebsiteChanges(website);
-      }, intervalTime * 1000);
-    });
-
-    return () => {
-      intervals.forEach(interval => {
-        clearInterval(interval);
-      });
-    };
-  }, [trackedWebsites, intervalTime, checkWebsiteChanges]);
 
   const checkWebsiteComplexity = async websiteUrl => {
     try {
@@ -221,16 +245,6 @@ const Popup = (): ReactElement => {
     chrome.storage.local.set({ intervalTime: value });
   };
 
-  useEffect(() => {
-    const protocolPattern = /^(http:\/\/|https:\/\/)/;
-    const match = url.match(protocolPattern);
-
-    if (match) {
-      setUrlPrefix(match[0]); // Set the dropdown to the matched protocol
-      setUrl(url.replace(protocolPattern, '')); // Remove the protocol from the URL
-    }
-  }, [url]);
-
   return (
     <ConfigProvider
       theme={{
@@ -245,7 +259,10 @@ const Popup = (): ReactElement => {
           </div>
         </div>
         <div className="container-selector">
-          <h1 className="container-selector__title">Check every:</h1>
+          <span className="container-selector__flex-layout">
+            <h1 className="container-selector__title">Check every:</h1>
+            {trackedWebsites.length > 0 && <h1>Next check in: {countdown}</h1>}
+          </span>
           <Select
             className="input--full-width"
             placeholder="Interval"
@@ -278,15 +295,7 @@ const Popup = (): ReactElement => {
           locale={{
             emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Results will be displayed here" />,
           }}
-          grid={{
-            gutter: 16,
-            xs: 1,
-            sm: 2,
-            md: 4,
-            lg: 4,
-            xl: 6,
-            xxl: 3,
-          }}
+          grid={{ gutter: 16, xs: 1 }}
           renderItem={website => (
             <List.Item>
               <Card
