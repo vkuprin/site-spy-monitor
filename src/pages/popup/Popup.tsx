@@ -27,7 +27,7 @@ import fetchWebsiteSize from '@root/utils/helpers/fetchWebsiteSize';
 import removePrefix from '@root/utils/helpers/removePrefix';
 import useTrackedWebsites from '@src/hooks/useTrackedWebsites';
 import useWebsiteDiff from '@src/hooks/useWebsiteDiff';
-import { INTERVAL_OPTIONS, spaIdentifiers, themeMode, URL_PREFIX_OPTIONS } from '@src/constants/global';
+import { spaIdentifiers, themeMode, URL_PREFIX_OPTIONS } from '@src/constants/global';
 
 const Header = (): ReactElement => (
   <header className="header">
@@ -68,9 +68,7 @@ const Popup = (): ReactElement => {
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
   const [url, setUrl] = useState<string>('');
   const [urlPrefix, setUrlPrefix] = useState<string>('https://');
-  const [intervalTime, setIntervalTime] = useState<number>(30);
   const [buttonText, setButtonText] = useState<string>('Track Current Website');
-  const [countdown, setCountdown] = useState<number>(intervalTime);
 
   const { websiteDiffs, checkWebsiteChanges, loadingDiff } = useWebsiteDiff();
 
@@ -93,33 +91,6 @@ const Popup = (): ReactElement => {
       setUrl(url.replace(protocolPattern, '')); // Remove the protocol from the URL
     }
   }, [url]);
-
-  useEffect(() => {
-    if (trackedWebsites.length === 0) {
-      return;
-    }
-    setCountdown(intervalTime);
-  }, [intervalTime, trackedWebsites.length]);
-
-  useEffect(() => {
-    if (trackedWebsites.length > 0) {
-      const countdownInterval = setInterval(() => {
-        setCountdown(prevCountdown => (prevCountdown > 1 ? prevCountdown - 1 : intervalTime));
-      }, 1000);
-
-      return () => clearInterval(countdownInterval);
-    }
-  }, [trackedWebsites.length]);
-
-  useEffect(() => {
-    const intervals = trackedWebsites.map(website => {
-      return setInterval(async () => {
-        await checkWebsiteChanges(website);
-      }, intervalTime * 1000);
-    });
-
-    return () => intervals.forEach(interval => clearInterval(interval));
-  }, [trackedWebsites.length]); // ToDo: check dependency array properly
 
   const checkSize = async () => {
     const size = await fetchWebsiteSize(urlPrefix + url);
@@ -149,10 +120,11 @@ const Popup = (): ReactElement => {
   const handleStartTracking = async () => {
     if (!url) {
       await trackCurrentWebsite();
+      setUrl('');
       return;
     }
 
-    if (url && intervalTime) {
+    if (url) {
       const exists = await doesWebsiteExist(urlPrefix + url);
 
       if (!exists) {
@@ -177,7 +149,7 @@ const Popup = (): ReactElement => {
     setOpen(true);
   };
 
-  const checkWebsiteComplexity = async websiteUrl => {
+  const checkWebsiteComplexity = async (websiteUrl: string) => {
     try {
       const response = await fetch(websiteUrl);
       const html = await response.text();
@@ -240,18 +212,11 @@ const Popup = (): ReactElement => {
     }
   };
 
-  const handleIntervalChange = (value: number) => {
-    setIntervalTime(value);
-    chrome.storage.local.set({ intervalTime: value });
-  };
-
-  useEffect(() => {
-    chrome.storage.local.get(['intervalTime'], function (result) {
-      if (result.intervalTime) {
-        setIntervalTime(result.intervalTime);
-      }
+  const handleCheckAllWebsites = async () => {
+    trackedWebsites.forEach(async website => {
+      await checkWebsiteChanges(website);
     });
-  }, []);
+  };
 
   return (
     <ConfigProvider
@@ -265,23 +230,6 @@ const Popup = (): ReactElement => {
           <div className="btn-container">
             <URLInput url={url} setUrlPrefix={setUrlPrefix} setUrl={setUrl} />
           </div>
-        </div>
-        <div className="container-selector">
-          <span className="container-selector__flex-layout">
-            <h1 className="container-selector__title">Check every:</h1>
-            {trackedWebsites.length > 0 && <h1>Next check in: {countdown}</h1>}
-          </span>
-          <Select
-            className="input--full-width"
-            placeholder="Interval"
-            onChange={handleIntervalChange}
-            value={intervalTime}>
-            {INTERVAL_OPTIONS.map(option => (
-              <Select.Option key={option.value} value={option.value}>
-                {option.label}
-              </Select.Option>
-            ))}
-          </Select>
         </div>
         <Popconfirm
           title={`The website ${urlPrefix + url} does not seem to exist. Do you still want to add it?`}
@@ -297,6 +245,18 @@ const Popup = (): ReactElement => {
             {buttonText}
           </Button>
         </Popconfirm>
+        {trackedWebsites.length > 0 && (
+          <div className="container-selector">
+            <Button
+              className="btn--check-all"
+              onClick={handleCheckAllWebsites}
+              loading={loadingDiff || loadingTrackedWebsites}
+              disabled={trackedWebsites.length === 0}
+              style={{ width: '100%' }}>
+              Check All Websites
+            </Button>
+          </div>
+        )}
         <List
           itemLayout="horizontal"
           dataSource={trackedWebsites}
@@ -318,7 +278,6 @@ const Popup = (): ReactElement => {
                     <div className="list__item--icons">
                       <ReloadOutlined
                         onClick={() => {
-                          setCountdown(intervalTime);
                           return checkWebsiteChanges(website);
                         }}
                       />

@@ -3,19 +3,25 @@ import packageJson from './package.json';
 /**
  * After changing, please reload the extension at `chrome://extensions`
  */
+
+const name = packageJson.name
+  .split('-')
+  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+  .join(' ');
+
 const manifest: chrome.runtime.ManifestV3 = {
   manifest_version: 3,
-  name: packageJson.name,
+  name: name,
   version: packageJson.version,
   description: packageJson.description,
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  permissions: ['alarms', 'notifications', 'storage'],
+  permissions: ['storage'],
   // options_page: 'src/pages/options/index.html',
-  background: {
-    service_worker: 'src/pages/background/index.js',
-    type: 'module',
-  },
+  // background: {
+  //   service_worker: 'src/pages/background/index.js',
+  //   type: 'module',
+  // },
   host_permissions: ['http://*/*', 'https://*/*'],
   action: {
     default_popup: 'src/pages/popup/index.html',
