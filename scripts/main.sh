@@ -1,14 +1,14 @@
-PROJECT_DIR=".."
-VERSION_FILES=""
+PROJECT_DIR="."
+VERSION_FILES="package.json"
 VERSION_FIELD="version"
 
 read_ver() {
-    grep "\"$VERSION_FIELD\"" "$PROJECT_DIR/$VERSION_FILE" | sed 's/.*: *"\(.*\)".*/\1/'
+    grep "\"$VERSION_FIELD\"" "$PROJECT_DIR/$VERSION_FILES" | sed 's/.*: *"\(.*\)".*/\1/'
 }
 
 write_ver() {
     local new_version="$1"
-    local file="$PROJECT_DIR/$VERSION_FILE"
+    local file="$PROJECT_DIR/$VERSION_FILES"
     sed "s/\"$VERSION_FIELD\" *: *\".*\",/\"$VERSION_FIELD\": \"$new_version\",/" "$file" > "$file.new"
     mv "$file.new" "$file"
 }
@@ -36,10 +36,8 @@ bump_ver() {
 
 main() {
     bump_ver
-#    pnpm build
-#
-#    git add .
-#    git commit -m "build: increase version number"
+    git add .
+    git commit -m "build: increase version number"
 }
 
 main
