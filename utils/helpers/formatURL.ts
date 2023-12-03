@@ -1,19 +1,19 @@
 const formatURL = (clientWebSiteUrl: string | URL) => {
   try {
-    const url = new URL(clientWebSiteUrl)
+    const url = new URL(clientWebSiteUrl);
     if (url.protocol === 'http:') {
-      url.protocol = 'https:'
+      url.protocol = 'https:';
     }
     if (url.protocol === 'https:') {
-      url.protocol = 'https:'
+      url.protocol = 'https:';
     }
     if (url.protocol === '') {
-      url.protocol = 'https:'
+      url.protocol = 'https:';
     }
-    return url.href
+    return url.href;
   } catch (e) {
-    return `https://${clientWebSiteUrl}`
+    return `https://${clientWebSiteUrl}`;
   }
-}
+};
 
-export default formatURL
+export default formatURL;

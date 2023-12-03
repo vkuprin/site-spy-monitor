@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Nunito:400,600");
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,600');
 
 // Color variables
 $color-main: #53a1b3;
@@ -19,7 +19,7 @@ $color-green-light: #76d77a;
 $color-red-light: #ff6666;
 
 // Font variables
-$font-nunito: "Nunito", sans-serif;
+$font-nunito: 'Nunito', sans-serif;
 $font-primary-size: 0.8rem;
 $font-header-size: 1.3rem;
 $font-icon-size: 1.5rem;
@@ -114,7 +114,9 @@ body {
     margin-bottom: 40px;
     border-radius: $border-radius;
     transition: all 0.45s ease-in-out;
-    box-shadow: 0 6px 12px 0 $color-shadow, 0 9px 30px 0 $color-shadow-deep;
+    box-shadow:
+      0 6px 12px 0 $color-shadow,
+      0 9px 30px 0 $color-shadow-deep;
 
     &--icons {
       gap: 10px;
