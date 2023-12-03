@@ -18,3 +18,5 @@ utils/reload/injections/*.js
 public/manifest.json
 builds/vee-tracker.zip
 .env
+# Sentry Config File
+.env.sentry-build-plugin

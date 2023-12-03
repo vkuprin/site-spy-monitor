@@ -1,3 +1,4 @@
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path, { resolve } from 'path';
@@ -38,15 +39,22 @@ export default defineConfig({
     customDynamicImport(),
     addHmr({ background: enableHmrInBackgroundScript, view: true }),
     watchRebuild(),
+    sentryVitePlugin({
+      org: 'vkuprin',
+      project: 'extension',
+    }),
   ],
   publicDir,
   build: {
     outDir,
+
     /** Can slowDown build speed. */
     // sourcemap: isDev,
     minify: isProduction,
+
     modulePreload: false,
     reportCompressedSize: isProduction,
+
     rollupOptions: {
       input: {
         popup: resolve(pagesDir, 'popup', 'index.html'),
@@ -65,6 +73,8 @@ export default defineConfig({
         },
       },
     },
+
+    sourcemap: true,
   },
 });
 
