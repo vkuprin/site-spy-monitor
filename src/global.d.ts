@@ -1,7 +1,12 @@
 import Chrome from 'chrome';
+import Firefox from '@types/firefox-webext-browser';
 
 declare namespace chrome {
   export default Chrome;
+}
+
+declare namespace firefox {
+  export default Firefox;
 }
 
 declare module 'virtual:reload-on-update-in-background-script' {

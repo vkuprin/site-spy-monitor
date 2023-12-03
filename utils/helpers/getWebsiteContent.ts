@@ -37,8 +37,7 @@ const getWebsiteContent = async (url: string): Promise<string> => {
   });
 
   // Remove all html tags and return the plain text
-  const withoutScripts = body.textContent || '';
-  return withoutScripts;
+  return body.textContent || '';
 };
 
 export default getWebsiteContent;
