@@ -252,7 +252,7 @@ const Popup = (): ReactElement => {
               onClick={handleCheckAllWebsites}
               loading={loadingDiff || loadingTrackedWebsites}
               disabled={trackedWebsites.length === 0}
-              style={{ width: '100%' }}>
+              style={{ width: '100%', marginBottom: 20 }}>
               Check All Websites
             </Button>
           </div>
