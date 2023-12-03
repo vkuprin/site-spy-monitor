@@ -5,10 +5,10 @@
 
 <a href="https://chrome.google.com/webstore/detail/site-spy-monitor/jeapcpanagdgipcfnncmogeojgfofige"
 style="text-decoration: none; color: #4285F4; font-weight: bold; font-size: 16px; display: flex; align-items: center;">
-<span>Add to Chrome</span>
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Google_Chrome_icon_%28February_2022%29.svg/64px-Google_Chrome_icon_%28February_2022%29.svg.png"
 alt="Chrome Extension Icon"
 style="margin-left: 8px; width: 24px; height: 24px;">
+<h3>Add to Chrome</h3>
 </a> 
 
 Site Spy is a web extension that allows you to track changes in websites over time. You can add URLs of websites to the tracker, set an interval to check for changes, and receive notifications if any modifications are detected
