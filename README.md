@@ -1,15 +1,13 @@
 ![alt text](./public/icon-128.png "Site Spy Logo")
 
 
-# Site Spy Monitor
-
+# Site Spy Monitor 
 <div>
 <a href="https://chrome.google.com/webstore/detail/site-spy-monitor/jeapcpanagdgipcfnncmogeojgfofige"
 style="text-decoration: none; color: #4285F4; font-weight: bold; font-size: 16px; display: flex; align-items: center;">
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Google_Chrome_icon_%28February_2022%29.svg/64px-Google_Chrome_icon_%28February_2022%29.svg.png"
 alt="Chrome Extension Icon"
 style="margin-left: 8px; width: 24px; height: 24px;">
-<h3>Add to Chrome</h3>
 </a> 
 </div>
 
