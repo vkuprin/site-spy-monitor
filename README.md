@@ -1,13 +1,13 @@
-# Website Tracker (Alpha Version)
+![alt text](./public/icon-128.png "Site Spy Logo")
 
-Website Tracker is a web application that allows you to track changes in websites over time. You can add URLs of websites to the tracker, set an interval to check for changes, and receive notifications if any modifications are detected
+# Site Spy Monitor
+
+Site Spy is a web extension that allows you to track changes in websites over time. You can add URLs of websites to the tracker, set an interval to check for changes, and receive notifications if any modifications are detected
 
 ## Features
 
 - Add websites to track and set the interval for checking changes
-- Receive notifications when a tracked website has been updated
-- Remove tracked websites from the list
-- Display the remaining intervals until the next check for each tracked website
+- Click on "Check All" button to check for changes in all tracked websites
 
 ## Getting Started
 
