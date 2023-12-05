@@ -1,23 +1,23 @@
-import React, { useState, useEffect, ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import {
   Button,
+  Card,
+  Collapse,
+  ConfigProvider,
+  Empty,
   Input,
   List,
   notification,
-  Select,
-  ConfigProvider,
-  theme,
   Popconfirm,
-  Card,
+  Select,
   Spin,
-  Empty,
-  Collapse,
+  theme,
   Tooltip,
 } from 'antd';
 import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
-import { CloseOutlined, EyeFilled, PlusCircleOutlined, MinusCircleOutlined, ReloadOutlined } from '@ant-design/icons';
+import { CloseOutlined, EyeFilled, MinusCircleOutlined, PlusCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 
 import './styles.scss';
 
@@ -72,7 +72,8 @@ const Popup = (): ReactElement => {
 
   const { websiteDiffs, checkWebsiteChanges, loadingDiff } = useWebsiteDiff();
 
-  const { trackedWebsites, addTrackedWebsite, removeTrackedWebsite, loadingTrackedWebsites } = useTrackedWebsites();
+  const { trackedWebsites, addTrackedWebsite, removeTrackedWebsite, loadingTrackedWebsites, faviconUrls } =
+    useTrackedWebsites();
 
   useEffect(() => {
     if (url) {
@@ -80,6 +81,7 @@ const Popup = (): ReactElement => {
     } else {
       setButtonText('Track Current Website');
     }
+    console.log(faviconUrls);
   }, [url]);
 
   useEffect(() => {
@@ -213,9 +215,9 @@ const Popup = (): ReactElement => {
   };
 
   const handleCheckAllWebsites = async () => {
-    trackedWebsites.forEach(async website => {
+    for (const website of trackedWebsites) {
       await checkWebsiteChanges(website);
-    });
+    }
   };
 
   return (
@@ -273,7 +275,7 @@ const Popup = (): ReactElement => {
                       display: 'flex',
                       justifyContent: 'space-between',
                     }}>
-                    <img className="favicon" src={`${website}/favicon.ico`} alt="" />
+                    <img className="favicon" src={faviconUrls[website]} alt="favicon" />
                     {truncate(removePrefix(website), 20)}
                     <div className="list__item--icons">
                       <ReloadOutlined

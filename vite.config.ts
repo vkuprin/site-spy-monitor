@@ -39,10 +39,11 @@ export default defineConfig({
     customDynamicImport(),
     addHmr({ background: enableHmrInBackgroundScript, view: true }),
     watchRebuild(),
-    sentryVitePlugin({
-      org: 'vkuprin',
-      project: 'extension',
-    }),
+    !isDev &&
+      sentryVitePlugin({
+        org: 'vkuprin',
+        project: 'extension',
+      }),
   ],
   publicDir,
   build: {

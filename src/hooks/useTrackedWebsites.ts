@@ -1,9 +1,27 @@
 import { useEffect, useState } from 'react';
 import trackedWebsitesStorage from '@src/shared/storages/trackedWebsitesStorage';
+import faviconFetcher from '@root/utils/helpers/faviconFetcher';
 
 const useTrackedWebsites = () => {
   const [trackedWebsites, setTrackedWebsites] = useState([]);
   const [loadingTrackedWebsites, setLoadingTrackedWebsites] = useState(false);
+  const [faviconUrls, setFaviconUrls] = useState({});
+
+  useEffect(() => {
+    // if (!trackedWebsites.length) return;
+    const fetchFavicon = async () => {
+      const favicons = await Promise.all(trackedWebsites.map(website => faviconFetcher(website)));
+      const faviconUrls = trackedWebsites.reduce((acc, website, index) => {
+        console.log(website, favicons[index]);
+        acc[website] = favicons[index];
+        return acc;
+      }, {});
+
+      setFaviconUrls(faviconUrls);
+    };
+
+    fetchFavicon();
+  }, [trackedWebsites]);
 
   useEffect(() => {
     const loadTrackedWebsites = async () => {
@@ -31,7 +49,7 @@ const useTrackedWebsites = () => {
     setTrackedWebsites(prevWebsites => prevWebsites.filter(website => website !== websiteUrl));
   };
 
-  return { trackedWebsites, addTrackedWebsite, removeTrackedWebsite, loadingTrackedWebsites };
+  return { trackedWebsites, addTrackedWebsite, removeTrackedWebsite, loadingTrackedWebsites, faviconUrls };
 };
 
 export default useTrackedWebsites;
