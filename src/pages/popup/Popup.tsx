@@ -32,7 +32,7 @@ import { spaIdentifiers, themeMode, URL_PREFIX_OPTIONS } from '@src/constants/gl
 const Header = (): ReactElement => (
   <header className="header">
     <EyeFilled />
-    <h1 style={{ cursor: 'pointer' }}>Site Spy</h1>
+    <h1>Site Spy</h1>
   </header>
 );
 
@@ -276,7 +276,9 @@ const Popup = (): ReactElement => {
                       justifyContent: 'space-between',
                     }}>
                     <img className="favicon" src={faviconUrls[website]} alt="favicon" />
-                    {truncate(removePrefix(website), 20)}
+                    <a href={website} target="_blank" rel="noreferrer" className="list__item--title">
+                      {truncate(removePrefix(website), 20)}
+                    </a>
                     <div className="list__item--icons">
                       <ReloadOutlined
                         onClick={() => {

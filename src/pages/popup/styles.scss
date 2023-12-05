@@ -118,6 +118,14 @@ body {
       0 6px 12px 0 $color-shadow,
       0 9px 30px 0 $color-shadow-deep;
 
+    &--title {
+      &:hover {
+        cursor: pointer;
+        opacity: 0.6;
+        color: $color-main-light;
+      }
+    }
+
     &--icons {
       gap: 10px;
       display: flex;
