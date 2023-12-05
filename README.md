@@ -9,6 +9,10 @@
 
 Site Spy is a web extension that allows you to track changes in websites over time. You can add URLs of websites to the tracker, set an interval to check for changes, and receive notifications if any modifications are detected
 
+## Preview
+
+![alt text](./public/preview.png "Site Spy Preview")
+
 ## Features
 
 - Add websites to track and set the interval for checking changes
