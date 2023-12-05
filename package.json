@@ -1,6 +1,6 @@
 {
   "name": "site-spy-monitor",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "author": "Vitaly Kuprin",
   "description": "Track and monitor website changes with this web extension",
   "license": "MIT",
