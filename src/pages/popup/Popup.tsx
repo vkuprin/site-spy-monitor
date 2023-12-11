@@ -81,7 +81,6 @@ const Popup = (): ReactElement => {
     } else {
       setButtonText('Track Current Website');
     }
-    console.log(faviconUrls);
   }, [url]);
 
   useEffect(() => {
