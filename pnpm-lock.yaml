@@ -24,8 +24,8 @@ dependencies:
     specifier: ^3.1.0
     version: 3.1.0
   diff:
-    specifier: ^5.1.0
-    version: 5.1.0
+    specifier: ^5.2.0
+    version: 5.2.0
   html-differ:
     specifier: ^1.4.0
     version: 1.4.0
@@ -62,8 +62,8 @@ devDependencies:
     specifier: 0.0.254
     version: 0.0.254
   '@types/diff':
-    specifier: ^5.0.8
-    version: 5.0.8
+    specifier: ^5.2.1
+    version: 5.2.1
   '@types/jest':
     specifier: 29.5.10
     version: 29.5.10
@@ -1912,8 +1912,8 @@ packages:
       '@types/har-format': 1.2.15
     dev: true
 
-  /@types/diff@5.0.8:
-    resolution: {integrity: sha512-kR0gRf0wMwpxQq6ME5s+tWk9zVCfJUl98eRkD05HWWRbhPB/eu4V1IbyZAsvzC1Gn4znBJ0HN01M4DGXdBEV8Q==}
+  /@types/diff@5.2.1:
+    resolution: {integrity: sha512-uxpcuwWJGhe2AR1g8hD9F5OYGCqjqWnBUQFD8gMZsDbv8oPHzxJF6iMO6n8Tk0AdzlxoaaoQhOYlIg/PukVU8g==}
     dev: true
 
   /@types/eslint-scope@3.7.7:
@@ -2007,12 +2007,6 @@ packages:
 
   /@types/node@18.19.2:
     resolution: {integrity: sha512-6wzfBdbWpe8QykUkXBjtmO3zITA0A3FIjoy+in0Y2K4KrCiRhNYJIdwAPDffZ3G6GnaKaSLSEa9ZuORLfEoiwg==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: true
-
-  /@types/node@20.10.5:
-    resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -3347,8 +3341,8 @@ packages:
     engines: {node: '>=0.3.1'}
     dev: false
 
-  /diff@5.1.0:
-    resolution: {integrity: sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==}
+  /diff@5.2.0:
+    resolution: {integrity: sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==}
     engines: {node: '>=0.3.1'}
     dev: false
 
@@ -5205,7 +5199,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.10.5
+      '@types/node': 20.14.9
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
